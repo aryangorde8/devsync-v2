@@ -1,0 +1,175 @@
+# =============================================================================
+# DevSync - Docker Compose Configuration
+# =============================================================================
+# Production deployment uses pre-built images (loaded via docker save/load).
+# Development builds from source using the 'dev' profile override.
+# =============================================================================
+
+services:
+  # ---------------------------------------------------------------------------
+  # PostgreSQL Database
+  # ---------------------------------------------------------------------------
+  db:
+    image: postgres:16-alpine
+    container_name: devsync_db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-devsync_db}
+      POSTGRES_USER: ${POSTGRES_USER:-devsync_user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-devsync_password}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-devsync_user} -d ${POSTGRES_DB:-devsync_db}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - devsync_network
+
+  # ---------------------------------------------------------------------------
+  # Redis (Caching & Celery Broker)
+  # ---------------------------------------------------------------------------
+  redis:
+    image: redis:7-alpine
+    container_name: devsync_redis
+    restart: unless-stopped
+    command: redis-server --appendonly yes
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - devsync_network
+
+  # ---------------------------------------------------------------------------
+  # Django Backend Application (production image)
+  # ---------------------------------------------------------------------------
+  backend:
+    image: devsync-backend:latest
+    container_name: devsync_backend
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      - POSTGRES_HOST=db
+      - POSTGRES_PORT=5432
+      - REDIS_URL=redis://redis:6379/0
+      - CELERY_BROKER_URL=redis://redis:6379/1
+      - CELERY_RESULT_BACKEND=redis://redis:6379/1
+    volumes:
+      - static_volume:/app/staticfiles
+      - media_volume:/app/media
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - devsync_network
+
+  # ---------------------------------------------------------------------------
+  # Celery Worker (Background Tasks)
+  # ---------------------------------------------------------------------------
+  celery_worker:
+    image: devsync-backend:latest
+    container_name: devsync_celery_worker
+    restart: unless-stopped
+    command: celery -A config worker -l INFO
+    env_file: .env
+    environment:
+      - POSTGRES_HOST=db
+      - POSTGRES_PORT=5432
+      - REDIS_URL=redis://redis:6379/0
+      - CELERY_BROKER_URL=redis://redis:6379/1
+      - CELERY_RESULT_BACKEND=redis://redis:6379/1
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - devsync_network
+
+  # ---------------------------------------------------------------------------
+  # Celery Beat (Scheduled Tasks)
+  # ---------------------------------------------------------------------------
+  celery_beat:
+    image: devsync-backend:latest
+    container_name: devsync_celery_beat
+    restart: unless-stopped
+    command: celery -A config beat -l INFO
+    env_file: .env
+    environment:
+      - POSTGRES_HOST=db
+      - POSTGRES_PORT=5432
+      - REDIS_URL=redis://redis:6379/0
+      - CELERY_BROKER_URL=redis://redis:6379/1
+      - CELERY_RESULT_BACKEND=redis://redis:6379/1
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - devsync_network
+
+  # ---------------------------------------------------------------------------
+  # Next.js Frontend Application (production image)
+  # ---------------------------------------------------------------------------
+  frontend:
+    image: devsync-frontend:latest
+    container_name: devsync_frontend
+    restart: unless-stopped
+    environment:
+      - NODE_ENV=production
+    depends_on:
+      - backend
+    networks:
+      - devsync_network
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3000/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # ---------------------------------------------------------------------------
+  # Nginx Reverse Proxy (Production profile)
+  # ---------------------------------------------------------------------------
+  nginx:
+    image: nginx:alpine
+    container_name: devsync_nginx
+    restart: unless-stopped
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/conf.d:/etc/nginx/conf.d:ro
+      - static_volume:/var/www/static:ro
+      - media_volume:/var/www/media:ro
+    ports:
+      - "80:80"
+      - "443:443"
+    depends_on:
+      - backend
+      - frontend
+    networks:
+      - devsync_network
+    profiles:
+      - production
+
+# =============================================================================
+# Networks
+# =============================================================================
+networks:
+  devsync_network:
+    driver: bridge
+
+# =============================================================================
+# Volumes
+# =============================================================================
+volumes:
+  postgres_data:
+  redis_data:
+  static_volume:
+  media_volume:

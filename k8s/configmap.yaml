@@ -1,0 +1,37 @@
+# DevSync ConfigMap
+# Non-sensitive configuration for the application
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: devsync-config
+  namespace: devsync
+  labels:
+    app: devsync
+data:
+  # Django settings
+  DJANGO_SETTINGS_MODULE: "config.settings"
+  DJANGO_DEBUG: "False"
+  DJANGO_ALLOWED_HOSTS: "*"
+  
+  # Database settings (host refers to the service name)
+  USE_POSTGRES: "True"
+  POSTGRES_HOST: "postgres-service"
+  POSTGRES_PORT: "5432"
+  POSTGRES_DB: "devsync"
+
+  # Legacy DB keys used by postgres StatefulSet env references
+  DB_HOST: "postgres-service"
+  DB_PORT: "5432"
+  DB_NAME: "devsync"
+  
+  # Redis settings
+  REDIS_HOST: "redis-service"
+  REDIS_PORT: "6379"
+  REDIS_URL: "redis://redis-service:6379/0"
+  USE_CELERY: "False"
+  
+  # Frontend settings
+  NEXT_PUBLIC_API_URL: "https://api.devsync.io/api/v1"
+  
+  # Logging
+  LOG_LEVEL: "INFO"

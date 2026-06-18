@@ -1,0 +1,26 @@
+# DevSync Backend - PythonAnywhere Deployment Requirements
+# Install with: pip install -r requirements-deploy.txt
+
+# Django Core
+Django==5.0
+djangorestframework==3.16.1
+djangorestframework-simplejwt==5.5.1
+django-cors-headers==4.9.0
+drf-spectacular==0.28.0
+
+# Database
+dj-database-url==3.0.1
+PyMySQL==1.1.2
+
+# Production Server
+gunicorn==23.0.0
+whitenoise==6.11.0
+
+# Utils
+python-dotenv==1.1.0
+Pillow==11.3.0
+requests==2.32.3
+
+# Optional (comment out if not needed)
+# celery==5.5.1
+# redis==5.3.0

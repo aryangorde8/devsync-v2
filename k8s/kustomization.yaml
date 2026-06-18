@@ -1,0 +1,32 @@
+# Kustomize configuration for DevSync
+# Apply all resources with: kubectl apply -k k8s/
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: devsync
+
+resources:
+  - namespace.yaml
+  - configmap.yaml
+  - secrets.yaml
+  - postgres.yaml
+  - redis.yaml
+  - backend-deployment.yaml
+  - backend-service.yaml
+  - frontend-deployment.yaml
+  - frontend-service.yaml
+  - ingress.yaml
+  - hpa.yaml
+  - network-policy.yaml
+
+commonLabels:
+  app.kubernetes.io/name: devsync
+  app.kubernetes.io/part-of: devsync
+  app.kubernetes.io/managed-by: kustomize
+
+# Image customization (override in overlays)
+images:
+  - name: ghcr.io/aryangorde8/devsync-backend
+    newTag: latest
+  - name: ghcr.io/aryangorde8/devsync-frontend
+    newTag: latest

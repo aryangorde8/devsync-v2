@@ -1,0 +1,9 @@
+# DevSync Kubernetes Namespace
+# Isolates all DevSync resources in a dedicated namespace
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: devsync
+  labels:
+    app: devsync
+    environment: production

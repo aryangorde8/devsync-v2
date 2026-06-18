@@ -1,0 +1,20 @@
+# DevSync Frontend Service
+# Exposes the Next.js app internally within the cluster
+apiVersion: v1
+kind: Service
+metadata:
+  name: devsync-frontend-service
+  namespace: devsync
+  labels:
+    app: devsync
+    component: frontend
+spec:
+  type: ClusterIP
+  selector:
+    app: devsync
+    component: frontend
+  ports:
+    - name: http
+      port: 3000
+      targetPort: 3000
+      protocol: TCP

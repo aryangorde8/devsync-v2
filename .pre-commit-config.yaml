@@ -1,0 +1,133 @@
+# Pre-commit Configuration for DevSync
+# Run: pre-commit install
+# Manual: pre-commit run --all-files
+
+repos:
+  # General hooks
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.5.0
+    hooks:
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: check-yaml
+        args: [--allow-multiple-documents]
+      - id: check-json
+      - id: check-added-large-files
+        args: ['--maxkb=1000']
+      - id: check-merge-conflict
+      - id: check-case-conflict
+      - id: detect-private-key
+      - id: mixed-line-ending
+        args: [--fix=lf]
+
+  # Python formatting with Black
+  - repo: https://github.com/psf/black
+    rev: 24.1.1
+    hooks:
+      - id: black
+        language_version: python3.12
+        files: ^backend/
+
+  # Python import sorting with isort
+  - repo: https://github.com/pycqa/isort
+    rev: 5.13.2
+    hooks:
+      - id: isort
+        args: ["--profile", "black"]
+        files: ^backend/
+
+  # Python linting with flake8
+  - repo: https://github.com/pycqa/flake8
+    rev: 7.0.0
+    hooks:
+      - id: flake8
+        args: [
+          '--max-line-length=120',
+          '--extend-ignore=E203,E501,W503',
+          '--exclude=migrations,__pycache__,.git,.venv'
+        ]
+        files: ^backend/
+
+  # Python security checks with bandit
+  - repo: https://github.com/PyCQA/bandit
+    rev: 1.7.7
+    hooks:
+      - id: bandit
+        args: ['-c', 'pyproject.toml', '-r', 'backend/']
+        additional_dependencies: ['bandit[toml]']
+        files: ^backend/
+        exclude: ^backend/tests/
+
+  # Django check
+  - repo: local
+    hooks:
+      - id: django-check
+        name: Django System Check
+        entry: bash -c 'cd backend && python manage.py check --fail-level WARNING'
+        language: system
+        pass_filenames: false
+        files: ^backend/
+
+  # JavaScript/TypeScript - ESLint
+  - repo: local
+    hooks:
+      - id: eslint
+        name: ESLint
+        entry: bash -c 'cd frontend && npm run lint -- --fix'
+        language: system
+        pass_filenames: false
+        files: ^frontend/src/.*\.(ts|tsx|js|jsx)$
+
+  # TypeScript type checking
+  - repo: local
+    hooks:
+      - id: typescript
+        name: TypeScript Check
+        entry: bash -c 'cd frontend && npx tsc --noEmit'
+        language: system
+        pass_filenames: false
+        files: ^frontend/src/.*\.(ts|tsx)$
+
+  # Dockerfile linting
+  - repo: https://github.com/hadolint/hadolint
+    rev: v2.12.0
+    hooks:
+      - id: hadolint-docker
+        args: ['--ignore', 'DL3008', '--ignore', 'DL3013']
+
+  # YAML linting
+  - repo: https://github.com/adrienverge/yamllint
+    rev: v1.33.0
+    hooks:
+      - id: yamllint
+        args: ['-c', '.yamllint.yml']
+        exclude: ^(k8s/|terraform/)
+
+  # Shell script linting
+  - repo: https://github.com/shellcheck-py/shellcheck-py
+    rev: v0.9.0.6
+    hooks:
+      - id: shellcheck
+        files: ^scripts/
+
+  # Markdown linting
+  - repo: https://github.com/igorshubovych/markdownlint-cli
+    rev: v0.39.0
+    hooks:
+      - id: markdownlint
+        args: ['--fix', '--ignore', 'node_modules']
+        exclude: ^(CHANGELOG\.md|vendor/)
+
+  # Secret detection
+  - repo: https://github.com/Yelp/detect-secrets
+    rev: v1.4.0
+    hooks:
+      - id: detect-secrets
+        args: ['--baseline', '.secrets.baseline']
+        exclude: (package-lock\.json|\.secrets\.baseline)
+
+# CI configuration
+ci:
+  autofix_commit_msg: 'style: auto-fix by pre-commit hooks'
+  autoupdate_commit_msg: 'chore: update pre-commit hooks'
+  skip: [django-check, eslint, typescript]

@@ -1,0 +1,78 @@
+# Redis Deployment for DevSync
+# Used for caching and Celery broker
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: redis
+  namespace: devsync
+  labels:
+    app: devsync
+    component: cache
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: devsync
+      component: cache
+  template:
+    metadata:
+      labels:
+        app: devsync
+        component: cache
+    spec:
+      containers:
+        - name: redis
+          image: redis:7-alpine
+          ports:
+            - containerPort: 6379
+              name: redis
+          command:
+            - redis-server
+            - --appendonly
+            - "yes"
+            - --maxmemory
+            - "256mb"
+            - --maxmemory-policy
+            - "allkeys-lru"
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "100m"
+            limits:
+              memory: "256Mi"
+              cpu: "250m"
+          livenessProbe:
+            tcpSocket:
+              port: 6379
+            initialDelaySeconds: 30
+            periodSeconds: 10
+          readinessProbe:
+            tcpSocket:
+              port: 6379
+            initialDelaySeconds: 5
+            periodSeconds: 5
+          volumeMounts:
+            - name: redis-data
+              mountPath: /data
+      volumes:
+        - name: redis-data
+          emptyDir: {}
+---
+# Redis Service
+apiVersion: v1
+kind: Service
+metadata:
+  name: redis-service
+  namespace: devsync
+  labels:
+    app: devsync
+    component: cache
+spec:
+  type: ClusterIP
+  selector:
+    app: devsync
+    component: cache
+  ports:
+    - name: redis
+      port: 6379
+      targetPort: 6379

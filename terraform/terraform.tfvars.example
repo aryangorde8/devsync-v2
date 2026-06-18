@@ -1,0 +1,32 @@
+# Example terraform.tfvars file
+# Copy to terraform.tfvars and customize values
+
+aws_region  = "us-east-1"
+environment = "prod"
+project_name = "devsync"
+
+# VPC
+vpc_cidr = "10.0.0.0/16"
+availability_zones = ["us-east-1a", "us-east-1b", "us-east-1c"]
+
+# EKS
+cluster_version     = "1.28"
+node_instance_types = ["t3.medium"]
+node_desired_size   = 2
+node_min_size       = 1
+node_max_size       = 5
+
+# RDS
+db_instance_class    = "db.t3.micro"
+db_allocated_storage = 20
+db_name              = "devsync"
+db_username          = "devsync_admin"
+# db_password        = "CHANGE_ME_IN_PRODUCTION"  # Use environment variable or secrets
+
+# Redis
+redis_node_type       = "cache.t3.micro"
+redis_num_cache_nodes = 1
+
+# Domain
+domain_name     = "devsync.io"
+create_dns_zone = false

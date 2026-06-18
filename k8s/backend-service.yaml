@@ -1,0 +1,23 @@
+# DevSync Backend Service
+# Exposes the Django API internally within the cluster
+apiVersion: v1
+kind: Service
+metadata:
+  name: devsync-backend-service
+  namespace: devsync
+  labels:
+    app: devsync
+    component: backend
+  annotations:
+    prometheus.io/scrape: "true"
+    prometheus.io/port: "8000"
+spec:
+  type: ClusterIP
+  selector:
+    app: devsync
+    component: backend
+  ports:
+    - name: http
+      port: 8000
+      targetPort: 8000
+      protocol: TCP

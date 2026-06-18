@@ -1,0 +1,407 @@
+# =============================================================================
+# DevSync - Advanced CI/CD Pipeline
+# =============================================================================
+# Multi-stage pipeline with:
+# - Code quality checks (linting, formatting)
+# - Security scanning (Trivy, CodeQL)
+# - Testing with coverage reports
+# - Docker image building and pushing
+# - Kubernetes deployment
+# =============================================================================
+
+name: DevSync CI/CD
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+    tags:
+      - 'v*'
+  pull_request:
+    branches:
+      - main
+      - develop
+
+env:
+  PYTHON_VERSION: '3.12'
+  NODE_VERSION: '20'
+  REGISTRY: ghcr.io
+  BACKEND_IMAGE: ghcr.io/${{ github.repository_owner }}/devsync-backend
+  FRONTEND_IMAGE: ghcr.io/${{ github.repository_owner }}/devsync-frontend
+
+jobs:
+  # ===========================================================================
+  # Stage 1: Code Quality & Linting
+  # ===========================================================================
+  lint:
+    name: Code Quality
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: 'pip'
+          cache-dependency-path: './backend/requirements.txt'
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+          cache-dependency-path: './frontend/package-lock.json'
+
+      - name: Install Python linters
+        run: pip install black flake8 isort mypy
+
+      - name: Run Black
+        run: black --check --diff backend/
+        continue-on-error: true
+
+      - name: Run isort
+        run: isort --check-only --diff backend/
+        continue-on-error: true
+
+      - name: Run Flake8
+        run: flake8 backend/ --count --select=E9,F63,F7,F82 --show-source --statistics
+
+      - name: Install Frontend dependencies
+        run: cd frontend && npm ci
+
+      - name: Run ESLint
+        run: cd frontend && npm run lint
+        continue-on-error: true
+
+      - name: Run TypeScript check
+        run: cd frontend && npx tsc --noEmit
+        continue-on-error: true
+
+  # ===========================================================================
+  # Stage 2: Security Scanning
+  # ===========================================================================
+  security:
+    name: Security Scan
+    runs-on: ubuntu-latest
+    permissions:
+      security-events: write
+      actions: read
+      contents: read
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v4
+        with:
+          languages: python, javascript
+
+      - name: Autobuild
+        uses: github/codeql-action/autobuild@v4
+
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v4
+
+      - name: Run Trivy vulnerability scanner (filesystem)
+        uses: aquasecurity/trivy-action@master
+        with:
+          scan-type: 'fs'
+          scan-ref: '.'
+          format: 'sarif'
+          output: 'trivy-results.sarif'
+          severity: 'CRITICAL,HIGH'
+
+      - name: Upload Trivy scan results
+        uses: github/codeql-action/upload-sarif@v4
+        if: always()
+        with:
+          sarif_file: 'trivy-results.sarif'
+
+      - name: Check Python dependencies for vulnerabilities
+        run: |
+          pip install safety
+          cd backend && safety check -r requirements.txt --full-report
+        continue-on-error: true
+
+  # ===========================================================================
+  # Stage 3: Backend Testing
+  # ===========================================================================
+  test-backend:
+    name: Backend Tests
+    runs-on: ubuntu-latest
+    needs: lint
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: devsync
+          POSTGRES_PASSWORD: devsync
+          POSTGRES_DB: devsync_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+      redis:
+        image: redis:7-alpine
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: 'pip'
+          cache-dependency-path: './backend/requirements.txt'
+
+      - name: Install dependencies
+        run: |
+          cd backend
+          pip install -r requirements.txt
+          pip install pytest-cov pytest-django
+
+      - name: Run Django checks
+        env:
+          DJANGO_SECRET_KEY: test-secret-key-for-ci
+          DJANGO_DEBUG: 'True'
+          DATABASE_URL: postgres://devsync:devsync@localhost:5432/devsync_test
+          REDIS_URL: redis://localhost:6379/0
+        run: |
+          cd backend
+          python manage.py check
+          python manage.py migrate --noinput
+
+      - name: Run pytest with coverage
+        env:
+          DJANGO_SECRET_KEY: test-secret-key-for-ci
+          DJANGO_DEBUG: 'True'
+          DATABASE_URL: postgres://devsync:devsync@localhost:5432/devsync_test
+          REDIS_URL: redis://localhost:6379/0
+        run: |
+          cd backend
+          pytest --cov=. --cov-report=xml --cov-report=html -v
+
+      - name: Upload coverage report
+        uses: codecov/codecov-action@v3
+        with:
+          files: ./backend/coverage.xml
+          flags: backend
+          name: backend-coverage
+        continue-on-error: true
+
+      - name: Upload coverage artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: backend-coverage
+          path: backend/htmlcov/
+
+  # ===========================================================================
+  # Stage 4: Frontend Testing
+  # ===========================================================================
+  test-frontend:
+    name: Frontend Tests
+    runs-on: ubuntu-latest
+    needs: lint
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+          cache-dependency-path: './frontend/package-lock.json'
+
+      - name: Install dependencies
+        run: cd frontend && npm ci
+
+      - name: Create env file
+        run: |
+          cd frontend
+          echo "NEXT_PUBLIC_API_URL=http://localhost:8000/api/v1" > .env.local
+
+      - name: Clear Next.js cache
+        run: cd frontend && rm -rf .next node_modules/.cache
+
+      - name: Run tests
+        run: cd frontend && npm test -- --coverage --watchAll=false --passWithNoTests
+        continue-on-error: true
+
+      - name: Build frontend
+        run: cd frontend && npm run build
+        env:
+          NEXT_PUBLIC_API_URL: http://localhost:8000/api/v1
+
+  # ===========================================================================
+  # Stage 5: Build Docker Images
+  # ===========================================================================
+  build:
+    name: Build Docker Images
+    runs-on: ubuntu-latest
+    needs: [test-backend, test-frontend, security]
+    if: github.event_name == 'push'
+    permissions:
+      contents: read
+      packages: write
+    outputs:
+      backend-tag: ${{ steps.meta-backend.outputs.tags }}
+      frontend-tag: ${{ steps.meta-frontend.outputs.tags }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      # Backend image
+      - name: Extract metadata for backend
+        id: meta-backend
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.BACKEND_IMAGE }}
+          tags: |
+            type=ref,event=branch
+            type=semver,pattern={{version}}
+            type=sha,prefix=
+
+      - name: Build and push backend image
+        uses: docker/build-push-action@v5
+        with:
+          context: ./backend
+          push: true
+          tags: ${{ steps.meta-backend.outputs.tags }}
+          labels: ${{ steps.meta-backend.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          build-args: |
+            BUILDKIT_INLINE_CACHE=1
+
+      # Frontend image
+      - name: Extract metadata for frontend
+        id: meta-frontend
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.FRONTEND_IMAGE }}
+          tags: |
+            type=ref,event=branch
+            type=semver,pattern={{version}}
+            type=sha,prefix=
+
+      - name: Build and push frontend image
+        uses: docker/build-push-action@v5
+        with:
+          context: ./frontend
+          push: true
+          tags: ${{ steps.meta-frontend.outputs.tags }}
+          labels: ${{ steps.meta-frontend.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          build-args: |
+            NEXT_PUBLIC_API_URL=https://api.devsync.io/api/v1
+
+      # Scan images for vulnerabilities
+      - name: Run Trivy on backend image
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: ${{ env.BACKEND_IMAGE }}:${{ github.sha }}
+          format: 'sarif'
+          output: 'trivy-backend.sarif'
+        continue-on-error: true
+
+      - name: Run Trivy on frontend image
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: ${{ env.FRONTEND_IMAGE }}:${{ github.sha }}
+          format: 'sarif'
+          output: 'trivy-frontend.sarif'
+        continue-on-error: true
+
+  # ===========================================================================
+  # Stage 6: Deploy to Kubernetes (Production)
+  # NOTE: Uncomment this job when AWS secrets are configured in GitHub:
+  # - AWS_ACCESS_KEY_ID
+  # - AWS_SECRET_ACCESS_KEY
+  # ===========================================================================
+  # deploy:
+  #   name: Deploy to Kubernetes
+  #   runs-on: ubuntu-latest
+  #   needs: build
+  #   if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+  #   environment: production
+  #   steps:
+  #     - name: Checkout code
+  #       uses: actions/checkout@v4
+  #
+  #     - name: Configure AWS credentials
+  #       uses: aws-actions/configure-aws-credentials@v4
+  #       with:
+  #         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+  #         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+  #         aws-region: us-east-1
+  #
+  #     - name: Update kubeconfig
+  #       run: aws eks update-kubeconfig --name devsync --region us-east-1
+  #
+  #     - name: Deploy to Kubernetes
+  #       run: |
+  #         cd k8s
+  #         kubectl apply -k .
+  #         kubectl set image deployment/devsync-backend \
+  #           backend=${{ env.BACKEND_IMAGE }}:${{ github.sha }} \
+  #           -n devsync
+  #         kubectl set image deployment/devsync-frontend \
+  #           frontend=${{ env.FRONTEND_IMAGE }}:${{ github.sha }} \
+  #           -n devsync
+  #         kubectl rollout status deployment/devsync-backend -n devsync --timeout=300s
+  #         kubectl rollout status deployment/devsync-frontend -n devsync --timeout=300s
+  #
+  #     - name: Verify deployment
+  #       run: |
+  #         kubectl get pods -n devsync
+  #         kubectl get services -n devsync
+  #
+  #     - name: Rollback on failure
+  #       if: failure()
+  #       run: |
+  #         kubectl rollout undo deployment/devsync-backend -n devsync
+  #         kubectl rollout undo deployment/devsync-frontend -n devsync
+
+  # ===========================================================================
+  # Stage 7: Post-Deployment Validation
+  # NOTE: Uncomment when deploy job is enabled
+  # ===========================================================================
+  # validate:
+  #   name: Post-Deployment Validation
+  #   runs-on: ubuntu-latest
+  #   needs: deploy
+  #   if: github.ref == 'refs/heads/main'
+  #   steps:
+  #     - name: Health check
+  #       run: |
+  #         sleep 30
+  #         curl -f https://api.devsync.io/api/v1/health/ || exit 1
+  #         curl -f https://devsync.io/ || exit 1
+  #       continue-on-error: true

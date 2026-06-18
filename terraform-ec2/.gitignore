@@ -1,0 +1,12 @@
+# Terraform state and locks (contain secrets)
+*.tfstate
+*.tfstate.*
+.terraform/
+.terraform.lock.hcl
+
+# Local variable files (often contain secrets)
+terraform.tfvars
+*.auto.tfvars
+
+# Generated SSH key
+devsync-key.pem

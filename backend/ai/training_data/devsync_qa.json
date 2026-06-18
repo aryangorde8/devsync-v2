@@ -1,0 +1,257 @@
+[
+  {
+    "instruction": "How do I add a profile picture?",
+    "input": "",
+    "output": "Go to Dashboard → Profile, click your avatar, and upload an image. Use a professional headshot with good lighting, minimum 400x400px. Profiles with photos get 14x more views."
+  },
+  {
+    "instruction": "How do I update my bio?",
+    "input": "",
+    "output": "Go to Dashboard → Profile → Edit Bio. Keep it 150-300 characters. Format: Who you are + What you do + What makes you unique. Example: 'Full-stack developer passionate about scalable web apps. 3+ years React & Node.js.'"
+  },
+  {
+    "instruction": "How do I add skills?",
+    "input": "",
+    "output": "Go to Dashboard → Skills → Add Skill. Enter skill name, category (Frontend, Backend, Tools, etc.), and proficiency (0-100%). Aim for 8-15 skills with honest levels across 3+ categories."
+  },
+  {
+    "instruction": "How do I add a project?",
+    "input": "",
+    "output": "Go to Dashboard → Projects → Add Project. Include title, description (explain the problem you solved), technologies, GitHub link, and live demo URL. Showcase 3-6 quality projects with screenshots."
+  },
+  {
+    "instruction": "How do I add work experience?",
+    "input": "",
+    "output": "Go to Dashboard → Experience → Add Experience. Enter company, role, employment type, dates, and achievements. Use action verbs and metrics: 'Reduced load time by 40%' instead of 'Worked on performance'."
+  },
+  {
+    "instruction": "How do I add education?",
+    "input": "",
+    "output": "Go to Dashboard → Education → Add Education. Enter institution, degree, field of study, start/end dates, and relevant coursework. Include bootcamps and online courses too."
+  },
+  {
+    "instruction": "How do I add certifications?",
+    "input": "",
+    "output": "Go to Dashboard → Certifications → Add Certification. Enter name, issuer, issue/expiry dates, and credential URL for verification. Popular: AWS Solutions Architect, Google Cloud, Meta Frontend/Backend Developer."
+  },
+  {
+    "instruction": "How can I improve my portfolio?",
+    "input": "",
+    "output": "Check your Portfolio Analysis score for personalized recommendations. Key areas: 1) Professional photo, 2) Compelling bio 150-300 chars, 3) Specific title with technologies, 4) 8-15 skills across categories, 5) 3-6 projects with demos and GitHub links, 6) Experience with quantified achievements."
+  },
+  {
+    "instruction": "What should I write in my title?",
+    "input": "",
+    "output": "Be specific and include your specialization plus key technologies. Good: 'Full Stack Developer | React & Node.js' or 'Frontend Engineer | TypeScript & Next.js'. Avoid generic titles like just 'Developer'. Keep it under 60 characters."
+  },
+  {
+    "instruction": "How many skills should I add?",
+    "input": "",
+    "output": "8-15 skills is the sweet spot. Include technical skills (React, Python, Docker) and soft skills (Communication, Problem Solving). Diversify across 3+ categories (Frontend, Backend, Tools, DevOps). Be honest with proficiency levels — a mix of levels looks more credible than all at 100%."
+  },
+  {
+    "instruction": "How do I write a good project description?",
+    "input": "",
+    "output": "Structure it as: 1) What the project does, 2) Why you built it (the problem), 3) Your approach and key features, 4) Technologies and their roles, 5) Results or metrics. Minimum 100 chars, aim for 200-400. Include specific numbers like 'handles 10k requests/day'."
+  },
+  {
+    "instruction": "What do recruiters look for?",
+    "input": "",
+    "output": "Recruiters prioritize: 1) Clean professional presentation, 2) Real projects with working demos (not tutorials), 3) Code quality visible through GitHub links, 4) Problem-solving described in project details, 5) Consistent branding across platforms, 6) Evidence of continuous learning, 7) Clear professional identity."
+  },
+  {
+    "instruction": "Should I use GitHub Copilot?",
+    "input": "",
+    "output": "Yes! AI tools like Copilot boost coding productivity by 30-50%. Other tools: ChatGPT/Claude for debugging and docs, Cursor IDE. Add 'AI-Assisted Development' to your DevSync Skills section to show you use modern workflows. It's increasingly expected by employers."
+  },
+  {
+    "instruction": "What technologies should I learn?",
+    "input": "",
+    "output": "For web dev: Must-have — JavaScript/TypeScript, React/Next.js, Node.js, Git, SQL. Highly valued — Docker, AWS, CI/CD, REST APIs. Trending — AI/ML basics, Rust, serverless. Pick one stack, master it deeply, then broaden. Add each skill to DevSync as you learn."
+  },
+  {
+    "instruction": "How do I prepare for interviews?",
+    "input": "",
+    "output": "1) Review your Portfolio Analysis for gaps, 2) Practice explaining each project: problem, approach, challenges, results (STAR method), 3) Know your skill proficiency honestly, 4) Have your DevSync link ready to share, 5) Research the company, 6) Practice coding challenges alongside portfolio prep."
+  },
+  {
+    "instruction": "How do I link my GitHub?",
+    "input": "",
+    "output": "Go to Dashboard → Profile → Social Links → Add GitHub URL. Also add repo links to individual projects. Keep your GitHub profile polished: good READMEs, pinned repositories, and a profile README. Consistent activity shows dedication."
+  },
+  {
+    "instruction": "What makes a good profile photo?",
+    "input": "",
+    "output": "Professional headshot with good lighting, neutral/clean background, and a friendly smile. Minimum 400x400px. Supported formats: JPEG, PNG, WebP. Profiles with photos get 14x more views. Avoid: group photos, selfies, low-res images, or overly casual shots."
+  },
+  {
+    "instruction": "How do I get a higher portfolio score?",
+    "input": "",
+    "output": "The score is based on: Profile (30 pts — photo, name, title, bio), Skills (20 pts — 8+ skills across 3+ categories), Projects (25 pts — 3+ with links and images), Experience (15 pts — with descriptions), Education & Certifications (10 pts). Check Portfolio Analysis for your specific gaps."
+  },
+  {
+    "instruction": "What is DevSync?",
+    "input": "",
+    "output": "DevSync is a production-grade developer portfolio platform with AI assistance. Built with Django REST Framework and Next.js 15. Features: profile management, skills tracking, project showcase, experience/education sections, AI-powered portfolio analysis, PDF resume generation, and a local AI assistant — all free, no API keys needed."
+  },
+  {
+    "instruction": "How does the AI assistant work?",
+    "input": "",
+    "output": "DevSync AI has three tiers: 1) Smart Response Engine for instant DevSync answers (<50ms), 2) RAG (Retrieval Augmented Generation) that searches a knowledge base of DevSync docs using semantic embeddings, 3) Ollama LLM (llama3.2) for complex questions. All processing is local — your data never leaves the server. No external API calls."
+  },
+  {
+    "instruction": "What tech stack does DevSync use?",
+    "input": "",
+    "output": "Backend: Django 5.0, Django REST Framework, PostgreSQL, Redis, Celery. Frontend: Next.js 15, TypeScript, Tailwind CSS, shadcn/ui. AI: Ollama (llama3.2), ChromaDB for RAG, sentence-transformers. DevOps: Docker, Kubernetes, Terraform, GitHub Actions, Nginx."
+  },
+  {
+    "instruction": "How do I showcase side projects?",
+    "input": "",
+    "output": "Add each project with: title, detailed description of the problem solved and your approach, technologies used with their roles, GitHub repository link (with clean README), live demo URL if deployed, and screenshots showing key features. Each project should demonstrate different skills."
+  },
+  {
+    "instruction": "What's a good bio length?",
+    "input": "",
+    "output": "150-300 characters is ideal. Too short lacks personality; too long won't be read. Structure: Who you are + What you do + What makes you unique. Example: 'Full-stack developer building scalable web apps. 3+ years React & Node.js. Open source contributor and cloud enthusiast.'"
+  },
+  {
+    "instruction": "Should I list all my skills?",
+    "input": "",
+    "output": "Quality over quantity. List 8-15 strongest skills relevant to your target role. Organize across categories (Frontend, Backend, Tools, DevOps). Having all skills at 100% looks unrealistic — use honest proficiency: 90%+ Expert, 70-89% Advanced, 50-69% Intermediate, 30-49% Beginner."
+  },
+  {
+    "instruction": "How do I stand out to recruiters?",
+    "input": "",
+    "output": "Key differentiators: 1) Live project demos (not just screenshots), 2) Quantified achievements in experience ('Reduced costs by 30%'), 3) Problem-solving narratives in project descriptions, 4) Complete polished profile across all sections, 5) Active GitHub with clean repos, 6) Certifications showing continuous learning, 7) Consistent personal branding."
+  },
+  {
+    "instruction": "What certifications should I get?",
+    "input": "",
+    "output": "By track — Cloud/DevOps: AWS Solutions Architect, GCP Professional, Azure Fundamentals. Frontend: Meta Frontend Developer. Backend: Meta Backend Developer, AWS Developer Associate. Data: Google Data Analytics. Security: CompTIA Security+. Free options: freeCodeCamp certificates, HackerRank skill certs. Add them to Dashboard → Certifications."
+  },
+  {
+    "instruction": "How often should I update my portfolio?",
+    "input": "",
+    "output": "Update after: completing a project, learning a new skill, earning a certification, changing jobs, or before applying to positions. At minimum, review monthly. Keep your most recent project less than 3 months old if actively job searching. Stale portfolios signal disengagement to recruiters."
+  },
+  {
+    "instruction": "Can I customize my portfolio URL?",
+    "input": "",
+    "output": "Your DevSync portfolio has a unique URL based on your username. Go to Dashboard → Profile to update your username. The URL is public — anyone can view your portfolio without logging in. Choose a professional username (e.g., your name or initials)."
+  },
+  {
+    "instruction": "How do I share my portfolio?",
+    "input": "",
+    "output": "Copy your portfolio URL from the dashboard. Share it: 1) On your resume under 'Links' or 'Portfolio', 2) LinkedIn profile, 3) GitHub profile README, 4) Email signature, 5) Job applications. Use the PDF export for ATS submissions and the live link for human reviewers."
+  },
+  {
+    "instruction": "What's the best way to describe experience?",
+    "input": "",
+    "output": "Use the STAR method and action verbs with metrics. Good: 'Built REST API serving 10k daily requests, reducing response time by 40%'. Bad: 'Worked on APIs'. Start with: Built, Designed, Implemented, Led, Optimized, Reduced, Increased, Deployed, Automated. Include quantifiable results wherever possible."
+  },
+  {
+    "instruction": "Hello",
+    "input": "",
+    "output": "Hi! I'm DevSync AI. I can help you build and improve your developer portfolio. Ask me about: adding projects, improving your profile, skill recommendations, career tips, or check your Portfolio Analysis for a personalized score."
+  },
+  {
+    "instruction": "Thank you",
+    "input": "",
+    "output": "You're welcome! Good luck with your portfolio. Quick reminders: keep it updated, check your Portfolio Analysis for improvement tips, and share your DevSync link when applying for positions."
+  },
+  {
+    "instruction": "What can you help with?",
+    "input": "",
+    "output": "I help with all DevSync features: Profile setup (photo, bio, title), Skills management (adding, categorizing, proficiency), Project showcasing (descriptions, links, demos), Experience/Education sections, Certifications, Portfolio improvement tips, career advice, and technology recommendations."
+  },
+  {
+    "instruction": "How do I delete a project?",
+    "input": "",
+    "output": "Go to Dashboard → Projects, find the project you want to remove, and click the delete button (trash icon). You'll be asked to confirm. If you want to keep it but hide it, you can change the project status to 'draft' instead."
+  },
+  {
+    "instruction": "What skill proficiency levels mean?",
+    "input": "",
+    "output": "DevSync proficiency guide: 90-100% Expert (can teach others, deep knowledge), 70-89% Advanced (comfortable in production), 50-69% Intermediate (can build features independently), 30-49% Beginner (basic understanding), 0-29% Novice (just started). A mix of levels looks more credible than all at 100%."
+  },
+  {
+    "instruction": "How do I generate a PDF resume?",
+    "input": "",
+    "output": "Go to Dashboard → Export/Download to generate a professional PDF from your portfolio data. It includes profile info, skills, projects, experience, and education. Make sure all sections are complete first. The PDF is ATS-compatible for job application systems."
+  },
+  {
+    "instruction": "What makes a good project for my portfolio?",
+    "input": "",
+    "output": "Strong portfolio projects: 1) Solve a real problem (not just a tutorial), 2) Have clean code with a good README, 3) Include a working demo, 4) Show different skills than your other projects, 5) Use relevant technologies for your target role. Good types: full-stack CRUD apps, APIs with auth, real-time apps, CLI tools, data dashboards."
+  },
+  {
+    "instruction": "How many projects should I have?",
+    "input": "",
+    "output": "3-6 high-quality projects is optimal. Each should demonstrate different skills or technologies. One well-documented project with a live demo is worth more than five empty repos. Feature your most impressive or most recent projects first."
+  },
+  {
+    "instruction": "What if I don't have work experience?",
+    "input": "",
+    "output": "All experience types count on DevSync: internships, freelance projects, contract work, open source contributions, hackathon projects, teaching/mentoring, volunteer tech work. Also include significant bootcamp projects or coursework. Frame personal projects as 'Independent Developer' experience."
+  },
+  {
+    "instruction": "How do I make my portfolio ATS-friendly?",
+    "input": "",
+    "output": "Use DevSync's PDF export for ATS (Applicant Tracking System) submissions. Include: relevant keywords from job descriptions in your skills and descriptions, clear section headers, proper formatting. Use the live portfolio link for human reviewers. Keep both your PDF and live portfolio consistent."
+  },
+  {
+    "instruction": "What's the Portfolio Analysis feature?",
+    "input": "",
+    "output": "Portfolio Analysis is an AI-powered tool that scores your portfolio across sections: Profile (30 pts), Skills (20 pts), Projects (25 pts), Experience (15 pts), Education & Certs (10 pts). It identifies issues, gives suggestions, and highlights strengths. Access via Dashboard → Portfolio Analysis or ask me to analyze your portfolio."
+  },
+  {
+    "instruction": "How do I add social links?",
+    "input": "",
+    "output": "Go to Dashboard → Profile → Social Links. Essential links to add: GitHub (showcases your code), LinkedIn (professional network). Optional: personal website, Twitter/X, Stack Overflow, Medium/Dev.to. Make sure your GitHub has pinned repos and your LinkedIn matches your DevSync portfolio."
+  },
+  {
+    "instruction": "Is my data private?",
+    "input": "",
+    "output": "Yes! DevSync AI runs entirely locally using Ollama — no data is sent to external APIs (no OpenAI, Google, etc.). Your portfolio data, questions, and conversation history stay on your server. It's privacy-by-design: no tracking, no data selling, zero subscription fees."
+  },
+  {
+    "instruction": "What skill categories should I use?",
+    "input": "",
+    "output": "DevSync categories: Frontend (React, Vue, HTML/CSS), Backend (Node.js, Python, Java), Database (PostgreSQL, MongoDB, Redis), DevOps (Docker, AWS, CI/CD), Tools (Git, VS Code, Postman), Mobile (React Native, Flutter), AI/ML (TensorFlow, PyTorch). Aim for skills across 3+ categories to show versatility."
+  },
+  {
+    "instruction": "How do I write a compelling project title?",
+    "input": "",
+    "output": "Use descriptive, specific titles. Good: 'E-Commerce Dashboard with Real-Time Analytics', 'Task Manager API with JWT Authentication'. Bad: 'My Project' or 'App'. Include what the project does or its key feature. Keep it under 60 characters."
+  },
+  {
+    "instruction": "Should I include technologies in project descriptions?",
+    "input": "",
+    "output": "Yes! List technologies with their roles: 'Built with React (frontend), Node.js/Express (API), PostgreSQL (database), Docker (deployment)'. This shows recruiters you understand the full stack. Add technologies in the dedicated technologies field AND mention them in context within descriptions."
+  },
+  {
+    "instruction": "How do I handle skill gaps?",
+    "input": "",
+    "output": "Use your Portfolio Analysis to identify gaps. Then: 1) Take online courses (Coursera, Udemy, freeCodeCamp), 2) Build a project using the new skill, 3) Add it to DevSync at your honest proficiency level, 4) Earn a certification if available. Show learning trajectory — even beginner-level skills demonstrate growth mindset."
+  },
+  {
+    "instruction": "What are the best free certifications for developers?",
+    "input": "",
+    "output": "Free developer certifications: freeCodeCamp (multiple tracks), HackerRank Skill Certificates, Google Digital Garage, IBM Data Science (Coursera audit), MongoDB University, AWS Cloud Practitioner Essentials (study material free), GitHub Foundations. Add each one to Dashboard → Certifications with credential URLs."
+  },
+  {
+    "instruction": "How important is a GitHub profile?",
+    "input": "",
+    "output": "Very important! GitHub is often the first thing recruiters check. Tips: 1) Create a profile README, 2) Pin your 6 best repos, 3) Write good READMEs for each project, 4) Keep repos clean (use .gitignore), 5) Show consistent activity, 6) Contribute to open source. Link your GitHub to DevSync for credibility."
+  },
+  {
+    "instruction": "What experience should I highlight?",
+    "input": "",
+    "output": "Prioritize: 1) Experience most relevant to your target role, 2) Roles with quantifiable achievements, 3) Technical leadership or mentoring, 4) Cross-functional collaboration. For each role, focus on impact over duties: 'Led migration to microservices, reducing downtime by 60%' beats 'Maintained backend systems'."
+  },
+  {
+    "instruction": "How do I make my portfolio mobile-friendly?",
+    "input": "",
+    "output": "DevSync portfolios are automatically responsive (built with Next.js + Tailwind CSS). To optimize: 1) Use high-quality but web-optimized images, 2) Keep titles concise, 3) Write scannable descriptions with bullet points, 4) Test your portfolio link on your phone. Many recruiters browse on mobile!"
+  }
+]

@@ -1,0 +1,65 @@
+# DevSync Ingress
+# Routes external traffic to frontend and backend services
+# Using NGINX Ingress Controller
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: devsync-ingress
+  namespace: devsync
+  labels:
+    app: devsync
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/proxy-body-size: "50m"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "60"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "60"
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
+    # Rate limiting
+    nginx.ingress.kubernetes.io/limit-rps: "10"
+    nginx.ingress.kubernetes.io/limit-connections: "5"
+spec:
+  tls:
+    - hosts:
+        - devsync.io
+        - api.devsync.io
+      secretName: devsync-tls
+  rules:
+    # Frontend - main domain
+    - host: devsync.io
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: devsync-frontend-service
+                port:
+                  number: 3000
+    # Backend API - api subdomain
+    - host: api.devsync.io
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: devsync-backend-service
+                port:
+                  number: 8000
+---
+# Certificate Issuer for Let's Encrypt
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: letsencrypt-prod
+spec:
+  acme:
+    server: https://acme-v02.api.letsencrypt.org/directory
+    email: aryan.gorde23@spit.ac.in
+    privateKeySecretRef:
+      name: letsencrypt-prod-key
+    solvers:
+      - http01:
+          ingress:
+            class: nginx

@@ -1,0 +1,145 @@
+# DevSync Backend Deployment
+# Django REST Framework API Server
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: devsync-backend
+  namespace: devsync
+  labels:
+    app: devsync
+    component: backend
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: devsync
+      component: backend
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  template:
+    metadata:
+      labels:
+        app: devsync
+        component: backend
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "8000"
+        prometheus.io/path: "/api/v1/core/metrics/"
+    spec:
+      serviceAccountName: devsync-backend
+      containers:
+        - name: backend
+          image: ghcr.io/aryangorde8/devsync-backend:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8000
+              name: http
+          env:
+            - name: DJANGO_SETTINGS_MODULE
+              valueFrom:
+                configMapKeyRef:
+                  name: devsync-config
+                  key: DJANGO_SETTINGS_MODULE
+            - name: DJANGO_DEBUG
+              valueFrom:
+                configMapKeyRef:
+                  name: devsync-config
+                  key: DJANGO_DEBUG
+            - name: DJANGO_ALLOWED_HOSTS
+              valueFrom:
+                configMapKeyRef:
+                  name: devsync-config
+                  key: DJANGO_ALLOWED_HOSTS
+            - name: USE_POSTGRES
+              valueFrom:
+                configMapKeyRef:
+                  name: devsync-config
+                  key: USE_POSTGRES
+            - name: POSTGRES_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: devsync-config
+                  key: POSTGRES_HOST
+            - name: POSTGRES_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: devsync-config
+                  key: POSTGRES_PORT
+            - name: POSTGRES_DB
+              valueFrom:
+                configMapKeyRef:
+                  name: devsync-config
+                  key: POSTGRES_DB
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: devsync-secrets
+                  key: DB_USER
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: devsync-secrets
+                  key: DB_PASSWORD
+            - name: DJANGO_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: devsync-secrets
+                  key: DJANGO_SECRET_KEY
+            - name: REDIS_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: devsync-config
+                  key: REDIS_URL
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "250m"
+            limits:
+              memory: "512Mi"
+              cpu: "500m"
+          livenessProbe:
+            httpGet:
+              path: /api/v1/core/health/
+              port: 8000
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: /api/v1/core/health/ready/
+              port: 8000
+            initialDelaySeconds: 10
+            periodSeconds: 5
+            timeoutSeconds: 3
+            failureThreshold: 3
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 1000
+            readOnlyRootFilesystem: true
+            allowPrivilegeEscalation: false
+          volumeMounts:
+            - name: tmp
+              mountPath: /tmp
+            - name: static
+              mountPath: /app/staticfiles
+      volumes:
+        - name: tmp
+          emptyDir: {}
+        - name: static
+          emptyDir: {}
+      imagePullSecrets:
+        - name: docker-registry-secret
+---
+# Service Account for Backend
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: devsync-backend
+  namespace: devsync
+  labels:
+    app: devsync
+    component: backend
