@@ -231,6 +231,42 @@ jobs:
         continue-on-error: true
 
   # ===========================================================================
+  # Stage 5: Deploy to EC2 (production, docker-compose + Caddy)
+  # Runs only when DEPLOY_TO_EC2 repo variable is "true" and these secrets exist:
+  #   EC2_HOST     - public IP / DNS of the instance
+  #   EC2_USER     - ssh user (e.g. ubuntu)
+  #   EC2_SSH_KEY  - private SSH deploy key (public half in the box's authorized_keys)
+  # One-time on the box: stop the old stack, place devsync-v2/.env (prod secrets).
+  # ===========================================================================
+  deploy:
+    name: Deploy to EC2
+    runs-on: ubuntu-latest
+    needs: build
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push' && vars.DEPLOY_TO_EC2 == 'true'
+    steps:
+      - name: Deploy over SSH
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script_stop: true
+          command_timeout: 20m
+          script: |
+            set -e
+            APP_DIR="$HOME/devsync-v2"
+            if [ ! -d "$APP_DIR/.git" ]; then
+              git clone https://github.com/aryangorde8/devsync-v2.git "$APP_DIR"
+            fi
+            cd "$APP_DIR"
+            git fetch origin main
+            git reset --hard origin/main
+            # Build the Django image (bakes in collectstatic) and (re)start the stack.
+            docker build -t devsync-backend:latest --target production -f backend/Dockerfile backend/
+            docker compose --profile production up -d --remove-orphans
+            docker image prune -f || true
+
+  # ===========================================================================
   # Stage 6: Deploy to Kubernetes (Production)
   # NOTE: Uncomment this job when AWS secrets are configured in GitHub:
   # - AWS_ACCESS_KEY_ID
