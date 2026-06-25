@@ -1,0 +1,6 @@
+# Copy to terraform.tfvars and fill in, then `terraform apply`.
+my_ip_cidr = "1.2.3.4/32"             # your IP for SSH — `curl ifconfig.me`, append /32
+region     = "ap-south-1"             # Mumbai
+domain     = "devsync.aryangorde.com" # must match the Caddyfile
+# instance_type = "t3.medium"
+# root_volume_gb = 30

@@ -1,0 +1,9 @@
+# Never commit Terraform state, lock backups, real tfvars, or the generated key.
+.terraform/
+.terraform.lock.hcl
+*.tfstate
+*.tfstate.*
+*.tfvars
+!*.tfvars.example
+devsync-key.pem
+crash.log
