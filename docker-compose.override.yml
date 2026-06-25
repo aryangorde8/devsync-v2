@@ -2,11 +2,6 @@
 # Auto-loaded by `docker compose`. Replaces Nginx with Caddy so TLS for
 # devsync.aryangorde.com is obtained + renewed automatically by Let's Encrypt.
 services:
-  # Take Nginx out of the production profile (Caddy owns :80/:443 now)
-  nginx:
-    profiles:
-      - disabled
-
   caddy:
     image: caddy:2-alpine
     container_name: devsync_caddy
