@@ -117,26 +117,7 @@ services:
       - devsync_network
 
   # ---------------------------------------------------------------------------
-  # Next.js Frontend Application (production image)
-  # ---------------------------------------------------------------------------
-  frontend:
-    image: devsync-frontend:latest
-    container_name: devsync_frontend
-    restart: unless-stopped
-    environment:
-      - NODE_ENV=production
-    depends_on:
-      - backend
-    networks:
-      - devsync_network
-    healthcheck:
-      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3000/"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-
-  # ---------------------------------------------------------------------------
-  # Nginx Reverse Proxy (Production profile)
+  # Nginx Reverse Proxy (legacy; disabled in the override — Caddy owns 80/443)
   # ---------------------------------------------------------------------------
   nginx:
     image: nginx:alpine
@@ -152,7 +133,6 @@ services:
       - "443:443"
     depends_on:
       - backend
-      - frontend
     networks:
       - devsync_network
     profiles:

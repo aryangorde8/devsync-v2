@@ -7,11 +7,6 @@ services:
     profiles:
       - disabled
 
-  # The UI is now server-rendered by Django; retire the Next.js frontend.
-  frontend:
-    profiles:
-      - disabled
-
   caddy:
     image: caddy:2-alpine
     container_name: devsync_caddy
