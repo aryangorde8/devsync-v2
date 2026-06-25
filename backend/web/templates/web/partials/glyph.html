@@ -1,0 +1,7 @@
+{# Renders a Synthesis glyph tile. Expects `g` = {path, grad, glow, size, ico}. #}
+<span class="ds-glyph" style="width:{{ g.size }}px;height:{{ g.size }}px;--ds-glyph-grad:{{ g.grad }};--ds-glyph-glow:{{ g.glow }}">
+  <span class="ds-glyph__tile"></span>
+  <span class="ds-glyph__ico" style="width:{{ g.ico }}px;height:{{ g.ico }}px">
+    <svg width="{{ g.ico }}" height="{{ g.ico }}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="{{ g.path }}" /></svg>
+  </span>
+</span>

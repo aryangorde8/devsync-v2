@@ -1,0 +1,186 @@
+{% extends "web/base.html" %}
+{% load static %}
+
+{% comment %}
+  DevSync — Flux landing (Synthesis design). Faithful port of the React
+  component tree in frontend/src/app/page.tsx. Inline styles mirror the
+  original style objects; helper classes (ds-btn, ds-glyph, flux-spin,
+  synthesis-gradient-text, anim-*) come from app.css / synthesis-tokens.css.
+{% endcomment %}
+
+{% block body %}
+<main style="background:#000;color:var(--text-primary);min-height:100vh;overflow-x:hidden;position:relative;z-index:1">
+
+  {# ---------------------------------------------------------------- nav #}
+  <nav style="position:sticky;top:0;z-index:50;background:rgba(0,0,0,.6);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-bottom:1px solid rgba(255,255,255,.06)">
+    <div style="max-width:1240px;margin:0 auto;padding:15px 28px;display:flex;align-items:center;justify-content:space-between">
+      <a href="/" style="display:flex;align-items:center;gap:10px;text-decoration:none;color:inherit">
+        <img src="{% static 'web/logos/devsync-64.png' %}" alt="DevSync" style="width:32px;height:32px;border-radius:8px" />
+        <span style="font-weight:700;font-size:18px;letter-spacing:-0.01em">DevSync</span>
+      </a>
+      <div class="ln-links" style="display:flex;align-items:center;gap:30px">
+        <a href="#features" style="font-size:14px;color:var(--text-secondary);font-weight:500;text-decoration:none">Features</a>
+        <a href="/login" style="font-size:14px;color:var(--text-secondary);font-weight:500;text-decoration:none">Portfolio</a>
+        <a href="/login" style="font-size:14px;color:var(--text-secondary);font-weight:500;text-decoration:none">Sign in</a>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px">
+        <a class="ds-btn ds-btn--ghost ds-btn--sm" href="/login"><span style="position:relative;z-index:1">Log in</span></a>
+        <a class="ds-btn ds-btn--light ds-btn--sm" href="/register"><span style="position:relative;z-index:1">Sign up</span></a>
+      </div>
+    </div>
+  </nav>
+
+  {# ---------------------------------------------------------------- hero #}
+  <section style="position:relative;overflow:hidden;background:#000">
+    {# flux ribbon backdrop #}
+    <div style="position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:0">
+      <div class="flux-spin" style="position:absolute;top:-60%;left:50%;width:120%;height:180%;transform:translateX(-50%);background:var(--flux-ribbon);filter:blur(90px) saturate(1.25);opacity:.45"></div>
+      <div style="position:absolute;inset:0;background:radial-gradient(120% 80% at 50% -10%, transparent 30%, #000 78%)"></div>
+      <div style="position:absolute;inset:0;background-image:var(--grain);background-size:160px 160px;opacity:.45;mix-blend-mode:overlay"></div>
+    </div>
+
+    <div class="fx-hero-grid" style="position:relative;z-index:1;max-width:1240px;margin:0 auto;padding:96px 28px 110px;display:grid;grid-template-columns:1.15fr 0.85fr;gap:40px;align-items:center">
+      <div>
+        <div class="anim-fade-in" style="display:inline-flex;align-items:center;gap:8px;padding:6px 14px;border-radius:999px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);margin-bottom:28px">
+          <span style="width:7px;height:7px;border-radius:50%;background:var(--accent-cyan);box-shadow:0 0 8px var(--accent-cyan)"></span>
+          <span class="synthesis-eyebrow" style="font-size:11.5px;color:var(--text-secondary)">// Portfolio platform v2 — Flux</span>
+        </div>
+        <h1 class="anim-slide-up" style="font-size:var(--text-display-xl);font-weight:800;letter-spacing:var(--tracking-tighter);line-height:1;margin:0">
+          Build a portfolio<br />that gets you <span class="flux-highlight"><span class="synthesis-gradient-text">hired.</span></span>
+        </h1>
+        <p class="anim-slide-up stagger-2" style="margin-top:26px;font-size:var(--text-lg);color:var(--text-secondary);max-width:520px;line-height:1.6">
+          One dashboard for your projects, skills and experience. A fast, themeable public
+          portfolio. An ATS-ready résumé and analytics on who's looking — built to make a
+          recruiter stop scrolling.
+        </p>
+        <div class="anim-slide-up stagger-3" style="margin-top:36px;display:flex;gap:12px;flex-wrap:wrap">
+          <a class="ds-btn ds-btn--light ds-btn--lg" href="/register">
+            <span style="position:relative;z-index:1">Start building free</span>
+            <span style="display:inline-flex;position:relative;z-index:1">
+              <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6" /></svg>
+            </span>
+          </a>
+          <a class="ds-btn ds-btn--secondary ds-btn--lg" href="/login"><span style="position:relative;z-index:1">See a live portfolio</span></a>
+        </div>
+      </div>
+
+      <div class="fx-hero-side" style="position:relative;display:flex;justify-content:center;align-items:center">
+        {# RimFocal (size 380) #}
+        <div style="position:relative;width:380px;height:380px;display:flex;align-items:center;justify-content:center">
+          <div class="flux-breathe" style="position:absolute;width:78%;height:78%;border-radius:50%;background:var(--rim-light);filter:blur(6px)"></div>
+          <div style="position:relative;width:46%;height:46%;background:linear-gradient(155deg, #0a0a0f, #050507);border-radius:22%;transform:rotate(45deg);box-shadow:inset 0 2px 1px rgba(255,255,255,.18), inset 0 -10px 24px rgba(0,0,0,.7), 0 0 60px -10px rgba(124,58,237,.5)">
+            <div style="position:absolute;inset:0;border-radius:22%;padding:1.5px;background:linear-gradient(155deg, rgba(255,255,255,.5), transparent 45%);-webkit-mask:linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);-webkit-mask-composite:xor;mask-composite:exclude"></div>
+          </div>
+          <svg width="98.8" height="98.8" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="position:absolute;top:50%;left:50%;transform:translate(-50%, -50%);filter:drop-shadow(0 2px 12px rgba(196,181,253,.75));z-index:2">
+            <path d="M16 18l6-6-6-6M8 6l-6 6 6 6M14.5 4l-5 16" />
+          </svg>
+        </div>
+        <div style="position:absolute;right:0;bottom:6px;display:flex;flex-direction:column;gap:8px;text-align:right">
+          {% for c in hero_cols %}
+          <span style="font-family:var(--font-mono);font-size:11.5px;letter-spacing:.12em;color:var(--text-tertiary)">{{ c }}</span>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  {# ---------------------------------------------------------------- logo wall #}
+  <section style="border-top:1px solid rgba(255,255,255,.06);border-bottom:1px solid rgba(255,255,255,.06);background:#020203">
+    <div style="max-width:1100px;margin:0 auto;padding:28px;display:flex;align-items:center;justify-content:center;gap:44px;flex-wrap:wrap">
+      <span style="font-family:var(--font-mono);font-size:11.5px;letter-spacing:.14em;color:var(--text-tertiary)">TRUSTED BY DEVS HIRED AT</span>
+      {% for l in logos %}
+      <span style="font-size:16px;font-weight:700;color:var(--text-tertiary);opacity:.75;letter-spacing:-0.01em">{{ l }}</span>
+      {% endfor %}
+    </div>
+  </section>
+
+  {# ---------------------------------------------------------------- features #}
+  <section id="features" style="position:relative;padding:100px 28px;max-width:1200px;margin:0 auto">
+    <div style="margin-bottom:56px">
+      <span class="synthesis-eyebrow">// Everything in one place</span>
+      <h2 style="font-size:var(--text-display-lg);font-weight:800;letter-spacing:var(--tracking-tight);margin-top:14px;max-width:620px">
+        Made to make you <span class="synthesis-gradient-text">look exceptional.</span>
+      </h2>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(300px, 1fr));gap:18px">
+      {% for f in features %}
+      <div class="fx-feat" style="position:relative;overflow:hidden;padding:26px;border-radius:var(--radius-2xl);background:var(--card);border:1px solid var(--card-border);backdrop-filter:blur(var(--glass-blur));-webkit-backdrop-filter:blur(var(--glass-blur));transition:transform var(--dur-slow) var(--ease-premium), border-color var(--dur-slow), box-shadow var(--dur-slow)">
+        {% include "web/partials/glyph.html" with g=f.glyph %}
+        <h3 style="font-size:var(--text-h4);font-weight:700;margin:18px 0 8px">{{ f.title }}</h3>
+        <p style="font-size:var(--text-sm);color:var(--text-secondary);line-height:1.6">{{ f.desc }}</p>
+      </div>
+      {% endfor %}
+    </div>
+  </section>
+
+  {# ---------------------------------------------------------------- light steps #}
+  <section style="background:#f7f7fb;color:#15151b;padding:92px 28px">
+    <div style="max-width:1080px;margin:0 auto">
+      <div style="display:flex;justify-content:center;margin-bottom:26px">
+        {% for c in ring %}
+        <span style="width:44px;height:44px;border-radius:50%;border:2.5px solid {{ c }};background:#fff;display:flex;align-items:center;justify-content:center;margin-left:{% if forloop.first %}0{% else %}-10px{% endif %};box-shadow:0 2px 8px rgba(0,0,0,.06)">
+          <span style="width:14px;height:14px;border-radius:4px;background:{{ c }}"></span>
+        </span>
+        {% endfor %}
+      </div>
+      <h2 style="text-align:center;font-size:var(--text-display-lg);font-weight:800;letter-spacing:var(--tracking-tight);color:#15151b">
+        From repo to <span style="background:#e9e7ff;border-radius:0.4em;padding:0.02em 0.3em">recruiter</span> in three steps.
+      </h2>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:20px;margin-top:52px">
+        {% for s in steps %}
+        <div style="background:#fff;border-radius:20px;padding:26px;border:1px solid #eceaf5;box-shadow:0 8px 24px -12px rgba(20,16,40,.12)">
+          <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px">
+            {% include "web/partials/glyph.html" with g=s.glyph %}
+            <span style="font-family:var(--font-mono);font-size:13px;color:#9a96b3">{{ s.num }}</span>
+          </div>
+          <h3 style="font-size:var(--text-h4);font-weight:700;color:#15151b;margin-bottom:6px">{{ s.title }}</h3>
+          <p style="font-size:var(--text-sm);color:#5b5772;line-height:1.6">{{ s.desc }}</p>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+  </section>
+
+  {# ---------------------------------------------------------------- CTA #}
+  <section style="position:relative;overflow:hidden;padding:120px 28px;text-align:center;background:#000">
+    <div class="flux-spin" style="position:absolute;top:-90%;left:50%;width:90%;height:220%;transform:translateX(-50%);background:var(--flux-ribbon);filter:blur(100px) saturate(1.2);opacity:.4;pointer-events:none"></div>
+    <div style="position:absolute;inset:0;background:radial-gradient(110% 80% at 50% 120%, transparent 35%, #000 80%)"></div>
+    <div style="position:relative;z-index:1;max-width:700px;margin:0 auto">
+      <h2 style="font-size:var(--text-display-lg);font-weight:800;letter-spacing:var(--tracking-tight)">
+        Ready to showcase<br /><span class="synthesis-gradient-text">your work?</span>
+      </h2>
+      <p style="margin-top:18px;font-size:var(--text-lg);color:var(--text-secondary)">Join thousands of developers building portfolios that get noticed.</p>
+      <div style="margin-top:34px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+        <a class="ds-btn ds-btn--light ds-btn--lg" href="/register">
+          <span style="position:relative;z-index:1">Start building free</span>
+          <span style="display:inline-flex;position:relative;z-index:1">
+            <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6" /></svg>
+          </span>
+        </a>
+        <a class="ds-btn ds-btn--secondary ds-btn--lg" href="/register">
+          <span style="display:inline-flex">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" /></svg>
+          </span>
+          <span style="position:relative;z-index:1">Continue with GitHub</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  {# ---------------------------------------------------------------- footer #}
+  <footer style="border-top:1px solid rgba(255,255,255,.06);padding:40px 28px;background:#020203">
+    <div style="max-width:1200px;margin:0 auto;display:flex;flex-wrap:wrap;gap:18px;align-items:center;justify-content:space-between">
+      <div style="display:flex;align-items:center;gap:10px">
+        <img src="{% static 'web/logos/devsync-48.png' %}" alt="DevSync" style="width:26px;height:26px;border-radius:7px" />
+        <span style="font-weight:700">DevSync</span>
+      </div>
+      <div style="display:flex;gap:22px;align-items:center">
+        <a href="/privacy" style="font-size:13px;color:var(--text-tertiary);text-decoration:none">Privacy</a>
+        <a href="/terms" style="font-size:13px;color:var(--text-tertiary);text-decoration:none">Terms</a>
+      </div>
+      <p style="font-family:var(--font-mono);font-size:12px;color:var(--text-tertiary)">© 2026 DevSync</p>
+    </div>
+  </footer>
+
+</main>
+{% endblock %}

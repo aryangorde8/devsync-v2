@@ -54,6 +54,15 @@ CSRF_TRUSTED_ORIGINS: List[str] = _parse_csv_env(
     "http://localhost:3000,http://127.0.0.1:3000,http://localhost:3001,http://127.0.0.1:3001,https://frontend-one-zeta-66.vercel.app,https://devsync-dun.vercel.app,https://devsync-frontend.vercel.app",
 )
 
+# The server-rendered UI is served from this domain and POSTs forms (login,
+# register, dashboard CRUD, logout). The apex domain must therefore be an
+# allowed host AND a trusted CSRF origin, even if the deploy env omits it.
+PRIMARY_DOMAIN = "devsync.aryangorde.com"
+if PRIMARY_DOMAIN not in ALLOWED_HOSTS:
+    ALLOWED_HOSTS.append(PRIMARY_DOMAIN)
+if f"https://{PRIMARY_DOMAIN}" not in CSRF_TRUSTED_ORIGINS:
+    CSRF_TRUSTED_ORIGINS.append(f"https://{PRIMARY_DOMAIN}")
+
 # CORS Configuration - Allow Vercel frontend domains
 CORS_ALLOWED_ORIGINS: List[str] = _parse_csv_env(
     "CORS_ALLOWED_ORIGINS",
@@ -120,6 +129,7 @@ LOCAL_APPS: List[str] = [
     "core.apps.CoreConfig",
     "portfolio.apps.PortfolioConfig",
     "ai.apps.AiConfig",
+    "web.apps.WebConfig",
 ]
 
 INSTALLED_APPS: List[str] = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
@@ -247,6 +257,11 @@ if USE_CELERY and REDIS_URL:
 # =============================================================================
 
 AUTH_USER_MODEL = "accounts.CustomUser"
+
+# Server-rendered UI (the `web` app) uses Django session auth.
+LOGIN_URL = "/login"
+LOGIN_REDIRECT_URL = "/dashboard"
+LOGOUT_REDIRECT_URL = "/"
 
 AUTH_PASSWORD_VALIDATORS = [
     {

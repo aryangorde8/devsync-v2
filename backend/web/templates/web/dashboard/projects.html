@@ -1,0 +1,81 @@
+{% extends "web/dashboard/base.html" %}
+{% block title %}Projects · DevSync{% endblock %}
+
+{% block dashboard %}
+<div class="max-w-6xl mx-auto" x-data="{ adding:false }">
+
+  <div class="flex items-center justify-between mb-8">
+    <div>
+      <h1 class="text-3xl font-bold text-violet-100">Projects</h1>
+      <p class="mt-2 text-violet-300/60 font-mono text-sm">// {{ projects|length }} project{{ projects|length|pluralize }}</p>
+    </div>
+    <button @click="adding=!adding" class="px-5 py-2.5 rounded-xl text-white font-medium flex items-center gap-2" style="background:linear-gradient(135deg, #7c3aed, #ec4899)">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" /></svg>
+      <span x-text="adding ? 'Cancel' : 'Add project'"></span>
+    </button>
+  </div>
+
+  {# add form #}
+  <div x-show="adding" x-transition x-cloak class="mb-8 rounded-3xl bg-[#0f1117]/80 backdrop-blur-xl border border-violet-500/20 p-6">
+    <form method="post" action="/dashboard/projects" class="grid md:grid-cols-2 gap-4">
+      {% csrf_token %}
+      <input type="hidden" name="action" value="create" />
+      <input name="title" required placeholder="Project title" class="px-4 py-3 bg-[#0f1117]/80 border-2 border-violet-500/20 rounded-xl text-violet-100 placeholder:text-slate-500 outline-none focus:border-violet-500/50 md:col-span-2" />
+      <input name="short_description" placeholder="Short description" class="px-4 py-3 bg-[#0f1117]/80 border-2 border-violet-500/20 rounded-xl text-violet-100 placeholder:text-slate-500 outline-none focus:border-violet-500/50 md:col-span-2" />
+      <textarea name="description" rows="3" placeholder="Full description" class="px-4 py-3 bg-[#0f1117]/80 border-2 border-violet-500/20 rounded-xl text-violet-100 placeholder:text-slate-500 outline-none focus:border-violet-500/50 md:col-span-2"></textarea>
+      <input name="github_url" placeholder="GitHub URL" class="px-4 py-3 bg-[#0f1117]/80 border-2 border-violet-500/20 rounded-xl text-violet-100 placeholder:text-slate-500 outline-none focus:border-violet-500/50" />
+      <input name="live_url" placeholder="Live URL" class="px-4 py-3 bg-[#0f1117]/80 border-2 border-violet-500/20 rounded-xl text-violet-100 placeholder:text-slate-500 outline-none focus:border-violet-500/50" />
+      <input name="technologies" placeholder="Technologies (comma separated)" class="px-4 py-3 bg-[#0f1117]/80 border-2 border-violet-500/20 rounded-xl text-violet-100 placeholder:text-slate-500 outline-none focus:border-violet-500/50" />
+      <select name="status" class="px-4 py-3 bg-[#0f1117]/80 border-2 border-violet-500/20 rounded-xl text-violet-100 outline-none focus:border-violet-500/50">
+        {% for value, label in statuses %}<option value="{{ value }}">{{ label }}</option>{% endfor %}
+      </select>
+      <label class="flex items-center gap-2 text-violet-300/80 text-sm md:col-span-2">
+        <input type="checkbox" name="is_featured" class="w-4 h-4 accent-violet-600" /> Feature this project
+      </label>
+      <button type="submit" class="px-5 py-2.5 rounded-xl text-white font-medium md:col-span-2" style="background:linear-gradient(135deg, #7c3aed, #ec4899)">Save project</button>
+    </form>
+  </div>
+
+  {# list #}
+  {% if projects %}
+  <div class="grid md:grid-cols-2 gap-4">
+    {% for p in projects %}
+    <div class="group relative rounded-3xl bg-[#0f1117]/60 backdrop-blur-xl border border-violet-500/20 p-6 hover:border-fuchsia-400/40 transition-all overflow-hidden">
+      <div class="flex items-start justify-between">
+        <div class="flex items-center gap-3 min-w-0">
+          <div class="w-11 h-11 rounded-xl flex items-center justify-center text-white font-bold flex-none" style="background:linear-gradient(135deg, #7c3aed, #ec4899)">{{ p.title|first|upper }}</div>
+          <div class="min-w-0">
+            <h3 class="text-violet-100 font-semibold truncate">{{ p.title }}</h3>
+            <span class="text-xs text-violet-300/50 font-mono">{{ p.get_status_display }}</span>
+          </div>
+        </div>
+        <form method="post" action="/dashboard/projects" onsubmit="return confirm('Delete this project?')">
+          {% csrf_token %}
+          <input type="hidden" name="action" value="delete" />
+          <input type="hidden" name="id" value="{{ p.id }}" />
+          <button class="p-2 rounded-lg text-white/30 hover:text-red-400 hover:bg-red-500/10 transition-all" title="Delete">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+          </button>
+        </form>
+      </div>
+      {% if p.short_description %}<p class="mt-3 text-sm text-violet-300/60 line-clamp-2">{{ p.short_description }}</p>{% endif %}
+      {% if p.technologies %}
+      <div class="mt-4 flex flex-wrap gap-2">
+        {% for tech in p.technologies %}<span class="px-2.5 py-1 text-xs rounded-full bg-violet-500/10 text-violet-300 border border-violet-500/20">{{ tech }}</span>{% endfor %}
+      </div>
+      {% endif %}
+      <div class="mt-4 flex gap-3">
+        {% if p.github_url %}<a href="{{ p.github_url }}" target="_blank" rel="noopener" class="text-sm text-violet-300/60 hover:text-violet-200">GitHub</a>{% endif %}
+        {% if p.live_url %}<a href="{{ p.live_url }}" target="_blank" rel="noopener" class="text-sm text-fuchsia-400 hover:text-fuchsia-300">Live demo</a>{% endif %}
+        {% if p.is_featured %}<span class="ml-auto px-2.5 py-1 text-xs rounded-full bg-fuchsia-500/15 text-fuchsia-300 font-mono">Featured</span>{% endif %}
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  {% else %}
+  <div class="text-center py-20 rounded-3xl bg-[#0f1117]/40 border border-violet-500/10">
+    <p class="text-violet-300/50">No projects yet. Click <span class="text-fuchsia-400">Add project</span> to create your first one.</p>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

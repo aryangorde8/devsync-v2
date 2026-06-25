@@ -1,0 +1,51 @@
+{% extends "web/dashboard/base.html" %}
+{% block title %}Settings · DevSync{% endblock %}
+
+{% block dashboard %}
+<div class="max-w-3xl mx-auto">
+  <div class="mb-8">
+    <h1 class="text-3xl font-bold text-violet-100">Settings</h1>
+    <p class="mt-2 text-violet-300/60 font-mono text-sm">// Manage your profile and account</p>
+  </div>
+
+  {% if saved %}
+  <div class="mb-6 p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 text-sm">Your profile was saved.</div>
+  {% endif %}
+
+  <form method="post" action="/dashboard/settings" class="rounded-3xl bg-[#0f1117]/70 border border-violet-500/20 p-6 grid md:grid-cols-2 gap-5">
+    {% csrf_token %}
+    <div>
+      <label class="block text-xs font-mono uppercase tracking-wider text-violet-300/70 mb-2">First name</label>
+      <input name="first_name" value="{{ form.first_name.value|default:'' }}" class="w-full px-4 py-3 bg-[#0f1117]/80 border-2 border-violet-500/20 rounded-xl text-violet-100 outline-none focus:border-violet-500/50" />
+    </div>
+    <div>
+      <label class="block text-xs font-mono uppercase tracking-wider text-violet-300/70 mb-2">Last name</label>
+      <input name="last_name" value="{{ form.last_name.value|default:'' }}" class="w-full px-4 py-3 bg-[#0f1117]/80 border-2 border-violet-500/20 rounded-xl text-violet-100 outline-none focus:border-violet-500/50" />
+    </div>
+    <div class="md:col-span-2">
+      <label class="block text-xs font-mono uppercase tracking-wider text-violet-300/70 mb-2">Professional title</label>
+      <input name="title" value="{{ form.title.value|default:'' }}" placeholder="Full Stack Developer" class="w-full px-4 py-3 bg-[#0f1117]/80 border-2 border-violet-500/20 rounded-xl text-violet-100 placeholder:text-slate-500 outline-none focus:border-violet-500/50" />
+    </div>
+    <div class="md:col-span-2">
+      <label class="block text-xs font-mono uppercase tracking-wider text-violet-300/70 mb-2">Bio</label>
+      <textarea name="bio" rows="3" maxlength="500" class="w-full px-4 py-3 bg-[#0f1117]/80 border-2 border-violet-500/20 rounded-xl text-violet-100 outline-none focus:border-violet-500/50">{{ form.bio.value|default:'' }}</textarea>
+    </div>
+    <div>
+      <label class="block text-xs font-mono uppercase tracking-wider text-violet-300/70 mb-2">GitHub username</label>
+      <input name="github_username" value="{{ form.github_username.value|default:'' }}" class="w-full px-4 py-3 bg-[#0f1117]/80 border-2 border-violet-500/20 rounded-xl text-violet-100 outline-none focus:border-violet-500/50" />
+    </div>
+    <div>
+      <label class="block text-xs font-mono uppercase tracking-wider text-violet-300/70 mb-2">LinkedIn URL</label>
+      <input name="linkedin_url" value="{{ form.linkedin_url.value|default:'' }}" class="w-full px-4 py-3 bg-[#0f1117]/80 border-2 border-violet-500/20 rounded-xl text-violet-100 outline-none focus:border-violet-500/50" />
+    </div>
+    <div class="md:col-span-2">
+      <label class="block text-xs font-mono uppercase tracking-wider text-violet-300/70 mb-2">Portfolio URL</label>
+      <input name="portfolio_url" value="{{ form.portfolio_url.value|default:'' }}" class="w-full px-4 py-3 bg-[#0f1117]/80 border-2 border-violet-500/20 rounded-xl text-violet-100 outline-none focus:border-violet-500/50" />
+    </div>
+    <div class="md:col-span-2 flex items-center justify-between pt-2">
+      <p class="text-xs text-violet-300/40 font-mono">Signed in as {{ user.email }}</p>
+      <button type="submit" class="px-6 py-3 rounded-xl text-white font-medium" style="background:linear-gradient(135deg, #7c3aed, #ec4899)">Save changes</button>
+    </div>
+  </form>
+</div>
+{% endblock %}

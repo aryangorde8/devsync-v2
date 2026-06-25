@@ -1,0 +1,11 @@
+{# One sidebar nav row. Expects `item` = {name, href, icon, active}. #}
+<a href="{{ item.href }}"
+   class="relative flex items-center gap-3 px-4 py-3 rounded-2xl transition-all duration-200 group overflow-hidden"
+   {% if item.active %}style="background:linear-gradient(135deg, rgba(124,58,237,0.13), rgba(236,72,153,0.06));box-shadow:0 0 20px rgba(124,58,237,0.13)"{% endif %}>
+  {% if item.active %}<span class="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-8 rounded-r-full" style="background:linear-gradient(to bottom, #7c3aed, #ec4899)"></span>{% endif %}
+  <span class="relative z-10 {% if not item.active %}opacity-60 group-hover:opacity-100{% endif %}"
+        style="color:{% if item.active %}#a78bfa{% else %}var(--text-secondary){% endif %}">
+    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="{{ item.icon }}" /></svg>
+  </span>
+  <span class="relative z-10 font-medium text-sm" style="color:{% if item.active %}#a78bfa{% else %}var(--text-secondary){% endif %}">{{ item.name }}</span>
+</a>

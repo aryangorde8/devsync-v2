@@ -1,0 +1,110 @@
+{% extends "web/base.html" %}
+{% load static %}
+{% load web_extras %}
+
+{% block head_extra %}{% include "web/partials/tailwind.html" %}{% endblock %}
+
+{% block body %}
+<div class="min-h-screen" x-data="{ sidebarOpen:false, profileOpen:false }">
+
+  {# mobile backdrop #}
+  <div x-show="sidebarOpen" x-transition.opacity @click="sidebarOpen=false"
+       class="fixed inset-0 z-40 lg:hidden backdrop-blur-sm" style="background-color:rgba(0,0,0,0.6)" x-cloak></div>
+
+  {# ---------------------------------------------------------------- sidebar #}
+  <aside class="fixed top-0 left-0 z-50 h-full w-72 transform transition-transform duration-300 ease-out lg:translate-x-0"
+         :class="sidebarOpen ? 'translate-x-0' : '-translate-x-full'"
+         style="background:linear-gradient(180deg, rgba(15,15,20,0.98) 0%, rgba(10,10,15,0.98) 100%);border-right:1px solid rgba(255,255,255,0.05);backdrop-filter:blur(20px)">
+
+    <div class="absolute top-0 left-0 right-0 h-32 pointer-events-none" style="background:radial-gradient(ellipse at top, rgba(124,58,237,0.15), transparent 70%)"></div>
+
+    {# logo #}
+    <div class="h-20 flex items-center justify-between px-5 relative" style="border-bottom:1px solid rgba(255,255,255,0.05)">
+      <a href="/dashboard" class="flex items-center gap-3 group">
+        <div class="relative">
+          <div class="absolute inset-0 rounded-xl blur-lg opacity-60" style="background:linear-gradient(135deg, #7c3aed, #ec4899)"></div>
+          <img src="{% static 'web/logos/devsync-48.png' %}" alt="DevSync" width="40" height="40" class="rounded-xl relative z-10" />
+        </div>
+        <div class="flex flex-col">
+          <span class="text-xl font-bold bg-clip-text text-transparent" style="background-image:linear-gradient(135deg, #fff, #7c3aed)">DevSync</span>
+          <span class="text-[10px] text-white/40 font-medium tracking-wider">PORTFOLIO BUILDER</span>
+        </div>
+      </a>
+      <button @click="sidebarOpen=false" class="lg:hidden p-2 text-white/40 hover:text-white hover:bg-white/5 rounded-xl transition-all">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+      </button>
+    </div>
+
+    {# nav #}
+    <nav class="p-4 space-y-1 overflow-y-auto h-[calc(100%-5rem)]">
+      {% for item in nav %}{% include "web/dashboard/_navitem.html" %}{% endfor %}
+    </nav>
+  </aside>
+
+  {# ---------------------------------------------------------------- main #}
+  <div class="lg:pl-72">
+    <header class="sticky top-0 z-30 h-16 backdrop-blur-xl" style="background:rgba(10,10,15,0.8);border-bottom:1px solid rgba(255,255,255,0.05)">
+      <div class="h-full px-6 flex items-center justify-between">
+        <button @click="sidebarOpen=true" class="lg:hidden p-2.5 text-white/50 hover:text-white rounded-xl hover:bg-white/5 transition-colors">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" /></svg>
+        </button>
+
+        <div class="hidden lg:flex items-center gap-3 px-5 py-2.5 rounded-2xl" style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.05)">
+          <svg class="w-4 h-4 text-white/40" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
+          <span class="text-sm text-white/40">Search anything...</span>
+        </div>
+
+        <div class="flex items-center gap-3">
+          {# theme toggle #}
+          <button onclick="(function(){var r=document.documentElement;var m=r.getAttribute('data-theme')==='dark'?'light':'dark';r.setAttribute('data-theme',m);try{localStorage.setItem('devsync-color-mode',m)}catch(e){}})()"
+                  class="theme-toggle" title="Toggle theme" aria-label="Toggle theme">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" /></svg>
+          </button>
+
+          <a href="{{ portfolio_path|default:'/dashboard/share' }}" class="hidden sm:flex items-center gap-2 px-4 py-2 text-sm text-white/50 hover:text-white rounded-xl hover:bg-white/5 transition-all">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" /></svg>
+            <span>View Portfolio</span>
+          </a>
+
+          {# profile dropdown #}
+          <div class="relative" @click.outside="profileOpen=false">
+            <button @click="profileOpen=!profileOpen" class="flex items-center gap-3 p-1.5 rounded-2xl transition-all hover:bg-white/5">
+              <div class="w-9 h-9 rounded-xl flex items-center justify-center relative" style="background:linear-gradient(135deg, #7c3aed, #ec4899)">
+                <span class="text-white text-sm font-bold relative z-10">{{ user.first_name|default:user.email|initial }}</span>
+              </div>
+              <div class="hidden md:block text-left">
+                <p class="text-sm font-medium text-white">{{ user.first_name|default:user.username|default:"User" }}</p>
+                <p class="text-xs text-white/40">{{ user.email }}</p>
+              </div>
+              <svg class="hidden md:block w-4 h-4 text-white/40 transition-transform" :class="profileOpen && 'rotate-180'" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
+            </button>
+
+            <div x-show="profileOpen" x-transition x-cloak class="absolute right-0 mt-2 w-60 rounded-2xl py-2 z-50 overflow-hidden"
+                 style="background:rgba(20,20,25,0.95);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,0.1);box-shadow:0 20px 50px rgba(0,0,0,0.5)">
+              <div class="px-4 py-3" style="border-bottom:1px solid rgba(255,255,255,0.05)">
+                <p class="text-sm font-semibold text-white">{{ user.get_full_name }}</p>
+                <p class="text-xs text-white/40 truncate">{{ user.email }}</p>
+              </div>
+              <a href="/dashboard/settings" class="flex items-center gap-3 px-4 py-3 text-sm text-white/70 hover:text-white hover:bg-white/5 transition-all">Settings</a>
+              <a href="/dashboard/activity" class="flex items-center gap-3 px-4 py-3 text-sm text-white/70 hover:text-white hover:bg-white/5 transition-all">Activity Log</a>
+              <a href="/dashboard/share" class="flex items-center gap-3 px-4 py-3 text-sm text-white/70 hover:text-white hover:bg-white/5 transition-all">Share Portfolio</a>
+              <div class="my-1 mx-4" style="height:1px;background-color:rgba(255,255,255,0.05)"></div>
+              <form method="post" action="/logout">
+                {% csrf_token %}
+                <button type="submit" class="flex items-center gap-3 w-full px-4 py-3 text-sm text-red-400 hover:text-red-300 hover:bg-red-500/10 transition-all">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" /></svg>
+                  Sign out
+                </button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="min-h-[calc(100vh-4rem)] p-6 lg:p-8">
+      {% block dashboard %}{% endblock %}
+    </main>
+  </div>
+</div>
+{% endblock %}

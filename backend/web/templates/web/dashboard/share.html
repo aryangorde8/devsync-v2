@@ -1,0 +1,23 @@
+{% extends "web/dashboard/base.html" %}
+{% block title %}Share · DevSync{% endblock %}
+
+{% block dashboard %}
+<div class="max-w-2xl mx-auto">
+  <div class="mb-8">
+    <h1 class="text-3xl font-bold text-violet-100">Share your portfolio</h1>
+    <p class="mt-2 text-violet-300/60 font-mono text-sm">// Send this link to recruiters</p>
+  </div>
+
+  <div class="rounded-3xl bg-[#0f1117]/70 border border-violet-500/20 p-8" x-data="{ copied:false }">
+    <label class="block text-xs font-mono uppercase tracking-wider text-violet-300/70 mb-2">Public link</label>
+    <div class="flex gap-3">
+      <input id="share-url" readonly value="{{ portfolio_url }}" class="flex-1 px-4 py-3 bg-[#0f1117]/80 border-2 border-violet-500/20 rounded-xl text-violet-100 outline-none" />
+      <button @click="navigator.clipboard.writeText(document.getElementById('share-url').value); copied=true; setTimeout(()=>copied=false,1500)" class="px-5 py-3 rounded-xl text-white font-medium" style="background:linear-gradient(135deg, #7c3aed, #ec4899)"><span x-text="copied ? 'Copied!' : 'Copy'"></span></button>
+    </div>
+    <a href="{{ portfolio_path }}" target="_blank" rel="noopener" class="mt-5 inline-flex items-center gap-2 text-fuchsia-400 hover:text-fuchsia-300">
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" /></svg>
+      Open public portfolio
+    </a>
+  </div>
+</div>
+{% endblock %}

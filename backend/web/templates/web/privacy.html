@@ -1,0 +1,27 @@
+{% extends "web/base.html" %}
+{% load static %}
+{% block title %}Privacy Policy · DevSync{% endblock %}
+
+{% block body %}
+<main style="background:#000;color:var(--text-primary);min-height:100vh">
+  <nav style="border-bottom:1px solid rgba(255,255,255,.06)">
+    <div style="max-width:880px;margin:0 auto;padding:18px 28px;display:flex;align-items:center;gap:10px">
+      <a href="/" style="display:flex;align-items:center;gap:10px;text-decoration:none;color:inherit">
+        <img src="{% static 'web/logos/devsync-48.png' %}" alt="DevSync" style="width:28px;height:28px;border-radius:8px" />
+        <span style="font-weight:700">DevSync</span>
+      </a>
+    </div>
+  </nav>
+  <div style="max-width:760px;margin:0 auto;padding:64px 28px">
+    <h1 style="font-size:var(--text-display-lg);font-weight:800;letter-spacing:var(--tracking-tight)">Privacy Policy</h1>
+    <p style="margin-top:8px;color:var(--text-tertiary);font-family:var(--font-mono);font-size:13px">Last updated June 2026</p>
+    <div style="margin-top:32px;color:var(--text-secondary);line-height:1.7;display:flex;flex-direction:column;gap:20px">
+      <p>DevSync stores only the portfolio information you choose to provide — your projects, skills, experience, education and certifications — to render your dashboard and public portfolio.</p>
+      <p><strong style="color:var(--text-primary)">What we collect.</strong> Account details (email, name), the portfolio content you create, and aggregate analytics about who views your public portfolio (approximate location, device type, referrer).</p>
+      <p><strong style="color:var(--text-primary)">How we use it.</strong> To operate your dashboard, generate your résumé, render your public page and show you view analytics. We never sell your data.</p>
+      <p><strong style="color:var(--text-primary)">Your control.</strong> You can edit or delete any portfolio item at any time, and export or remove your account from Settings.</p>
+    </div>
+    <a href="/" style="display:inline-block;margin-top:40px;color:var(--accent);text-decoration:none">← Back to home</a>
+  </div>
+</main>
+{% endblock %}

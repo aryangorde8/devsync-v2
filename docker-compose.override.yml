@@ -1,0 +1,35 @@
+# HTTPS / custom-domain deploy.
+# Auto-loaded by `docker compose`. Replaces Nginx with Caddy so TLS for
+# devsync.aryangorde.com is obtained + renewed automatically by Let's Encrypt.
+services:
+  # Take Nginx out of the production profile (Caddy owns :80/:443 now)
+  nginx:
+    profiles:
+      - disabled
+
+  # The UI is now server-rendered by Django; retire the Next.js frontend.
+  frontend:
+    profiles:
+      - disabled
+
+  caddy:
+    image: caddy:2-alpine
+    container_name: devsync_caddy
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      - backend
+    networks:
+      - devsync_network
+    profiles:
+      - production
+
+volumes:
+  caddy_data:
+  caddy_config:

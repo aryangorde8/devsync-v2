@@ -1,0 +1,12 @@
+# DevSync — automatic HTTPS via Caddy (Let's Encrypt).
+# Terminates TLS for the domain and reverse-proxies to the Django backend.
+#
+# The UI is now server-rendered by Django (the `web` app), so EVERYTHING —
+# pages, API, admin, static, media — is served by the backend container. The
+# former Next.js `frontend` container is retired.
+devsync.aryangorde.com {
+	encode zstd gzip
+
+	# Everything (pages + API + admin + static + media + health) -> Django backend
+	reverse_proxy backend:8000
+}

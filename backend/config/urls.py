@@ -43,6 +43,9 @@ urlpatterns = [
         f"{API_V1_PREFIX}portfolio/", include("portfolio.urls", namespace="portfolio")
     ),
     path(f"{API_V1_PREFIX}ai/", include("ai.urls")),
+    # Server-rendered UI (landing, auth, dashboard, public portfolio).
+    # Mounted last so it only catches paths the API/admin/health did not.
+    path("", include("web.urls")),
 ]
 
 # Serve media files in development

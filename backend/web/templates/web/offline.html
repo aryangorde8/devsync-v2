@@ -1,0 +1,15 @@
+{% extends "web/base.html" %}
+{% block title %}Offline · DevSync{% endblock %}
+
+{% block body %}
+<main style="background:#000;color:var(--text-primary);min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px">
+  <div style="text-align:center;max-width:420px">
+    <div style="width:72px;height:72px;margin:0 auto 24px;border-radius:20px;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg, #7c3aed, #ec4899)">
+      <svg width="36" height="36" fill="none" stroke="#fff" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 5.636a9 9 0 010 12.728m0 0l-2.829-2.829m2.829 2.829L21 21M15.536 8.464a5 5 0 010 7.072m0 0l-2.829-2.829m-4.243 2.829a4.978 4.978 0 01-1.414-2.83m-1.414 5.658a9 9 0 01-2.167-9.238m7.824 2.167a1 1 0 111.414 1.414m-1.414-1.414L3 3m8.293 8.293l1.414 1.414" /></svg>
+    </div>
+    <h1 style="font-size:var(--text-h2);font-weight:800">You're offline</h1>
+    <p style="margin-top:12px;color:var(--text-secondary)">DevSync can't reach the network right now. Check your connection and try again.</p>
+    <button onclick="location.reload()" class="ds-btn ds-btn--light ds-btn--lg" style="margin-top:24px"><span style="position:relative;z-index:1">Retry</span></button>
+  </div>
+</main>
+{% endblock %}

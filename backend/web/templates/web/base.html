@@ -1,0 +1,50 @@
+{% load static %}<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="utf-8" />
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1, maximum-scale=5, user-scalable=yes"
+  />
+  <meta name="theme-color" content="#7c3aed" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <title>{% block title %}DevSync - Developer Portfolio Dashboard{% endblock %}</title>
+  <meta
+    name="description"
+    content="{% block description %}Showcase your projects, skills, and achievements in one beautiful, professional dashboard. Built for developers who want to stand out.{% endblock %}"
+  />
+
+  <link rel="icon" href="{% static 'web/logos/devsync-64.png' %}" />
+
+  <!-- Geist / Geist Mono (was next/font in the React app) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&family=Geist+Mono:wght@100..900&display=swap"
+    rel="stylesheet"
+  />
+
+  <!-- Prevent flash of wrong theme on load (ported from layout.tsx ThemeScript) -->
+  <script>
+    (function () {
+      try {
+        var mode = localStorage.getItem("devsync-color-mode");
+        if (!mode) {
+          mode = window.matchMedia("(prefers-color-scheme: light)").matches
+            ? "light"
+            : "dark";
+        }
+        document.documentElement.setAttribute("data-theme", mode);
+      } catch (e) {
+        document.documentElement.setAttribute("data-theme", "dark");
+      }
+    })();
+  </script>
+
+  <link rel="stylesheet" href="{% static 'web/css/app.css' %}" />
+  {% block head_extra %}{% endblock %}
+</head>
+<body>
+  {% block body %}{% endblock %}
+</body>
+</html>

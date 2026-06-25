@@ -1,0 +1,73 @@
+{% extends "web/dashboard/base.html" %}
+
+{% block title %}Dashboard · DevSync{% endblock %}
+
+{% block dashboard %}
+<div class="max-w-6xl mx-auto">
+
+  <div class="mb-8">
+    <h1 class="text-3xl font-bold text-violet-100">Welcome back, {{ user.first_name|default:user.username|default:"developer" }} 👋</h1>
+    <p class="mt-2 text-violet-300/60 font-mono text-sm">// Here's what's happening with your portfolio</p>
+  </div>
+
+  {# stat cards #}
+  <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+    {% for label, value, hue in stat_cards %}
+    <div class="group relative rounded-3xl bg-[#0f1117]/80 backdrop-blur-2xl border border-violet-500/20 p-6 hover:border-violet-400/40 transition-all duration-500 overflow-hidden">
+      <div class="absolute -right-4 -top-4 w-24 h-24 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-700" style="background:{{ hue }}1a"></div>
+      <p class="relative text-sm font-medium uppercase tracking-wider font-mono" style="color:{{ hue }}">{{ label }}</p>
+      <p class="relative mt-3 text-5xl font-semibold text-violet-100 tracking-tight">{{ value }}</p>
+    </div>
+    {% endfor %}
+  </div>
+
+  <div class="grid lg:grid-cols-3 gap-6">
+    {# featured / recent projects #}
+    <div class="lg:col-span-2 rounded-3xl bg-[#0f1117]/60 backdrop-blur-xl border border-violet-500/20 p-6">
+      <div class="flex items-center justify-between mb-5">
+        <h2 class="text-lg font-semibold text-violet-100">Recent projects</h2>
+        <a href="/dashboard/projects" class="text-sm text-fuchsia-400 hover:text-fuchsia-300 font-mono">Manage →</a>
+      </div>
+      {% if recent_projects %}
+      <div class="space-y-3">
+        {% for p in recent_projects %}
+        <div class="flex items-center gap-4 p-4 rounded-2xl bg-violet-500/5 border border-violet-500/10 hover:border-fuchsia-400/30 transition-all">
+          <div class="w-10 h-10 rounded-xl flex items-center justify-center text-white font-bold" style="background:linear-gradient(135deg, #7c3aed, #ec4899)">{{ p.title|first|upper }}</div>
+          <div class="min-w-0 flex-1">
+            <p class="text-violet-100 font-medium truncate">{{ p.title }}</p>
+            <p class="text-violet-300/50 text-sm truncate">{{ p.short_description|default:p.get_status_display }}</p>
+          </div>
+          {% if p.is_featured %}<span class="px-2.5 py-1 text-xs rounded-full bg-fuchsia-500/15 text-fuchsia-300 font-mono">Featured</span>{% endif %}
+        </div>
+        {% endfor %}
+      </div>
+      {% else %}
+      <div class="text-center py-12">
+        <p class="text-violet-300/50">No projects yet.</p>
+        <a href="/dashboard/projects" class="inline-block mt-3 px-5 py-2.5 rounded-xl text-white font-medium" style="background:linear-gradient(135deg, #7c3aed, #ec4899)">Add your first project</a>
+      </div>
+      {% endif %}
+    </div>
+
+    {# recent activity #}
+    <div class="rounded-3xl bg-[#0f1117]/60 backdrop-blur-xl border border-violet-500/20 p-6">
+      <h2 class="text-lg font-semibold text-violet-100 mb-5">Recent activity</h2>
+      {% if recent_activity %}
+      <div class="space-y-4">
+        {% for a in recent_activity %}
+        <div class="flex items-start gap-3">
+          <span class="mt-1.5 w-2 h-2 rounded-full flex-none" style="background:#a78bfa"></span>
+          <div>
+            <p class="text-sm text-violet-100">{{ a.get_action_display }} {{ a.model_name }}</p>
+            <p class="text-xs text-violet-300/40 font-mono">{{ a.created_at|date:"M j, H:i" }}</p>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+      {% else %}
+      <p class="text-violet-300/50 text-sm">No activity recorded yet.</p>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock %}

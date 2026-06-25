@@ -1,0 +1,37 @@
+{% extends "web/dashboard/base.html" %}
+{% block title %}Messages · DevSync{% endblock %}
+
+{% block dashboard %}
+<div class="max-w-4xl mx-auto">
+  <div class="mb-8">
+    <h1 class="text-3xl font-bold text-violet-100">Messages</h1>
+    <p class="mt-2 text-violet-300/60 font-mono text-sm">// {{ unread }} unread · {{ messages_list|length }} total</p>
+  </div>
+
+  {% if messages_list %}
+  <div class="space-y-4">
+    {% for m in messages_list %}
+    <div class="rounded-3xl bg-[#0f1117]/60 border border-violet-500/20 p-6 {% if m.status == 'unread' %}border-l-4 border-l-fuchsia-500{% endif %}">
+      <div class="flex items-start justify-between gap-4">
+        <div class="min-w-0">
+          <div class="flex items-center gap-2">
+            <h3 class="text-violet-100 font-semibold">{{ m.subject }}</h3>
+            {% if m.status == 'unread' %}<span class="px-2 py-0.5 text-[10px] rounded-full bg-fuchsia-500/15 text-fuchsia-300 font-mono uppercase">New</span>{% endif %}
+          </div>
+          <p class="text-sm text-violet-300/60">{{ m.sender_name }} · <span class="text-violet-300/40">{{ m.sender_email }}</span></p>
+          <p class="mt-3 text-sm text-violet-300/70">{{ m.message|linebreaksbr }}</p>
+          <p class="mt-2 text-xs text-violet-300/30 font-mono">{{ m.created_at|date:"M j, Y H:i" }}</p>
+        </div>
+        <form method="post" action="/dashboard/messages" onsubmit="return confirm('Delete this message?')">
+          {% csrf_token %}<input type="hidden" name="action" value="delete" /><input type="hidden" name="id" value="{{ m.id }}" />
+          <button class="p-2 rounded-lg text-white/30 hover:text-red-400 hover:bg-red-500/10 transition-all"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg></button>
+        </form>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  {% else %}
+  <div class="text-center py-20 rounded-3xl bg-[#0f1117]/40 border border-violet-500/10"><p class="text-violet-300/50">No messages yet. Share your portfolio to start receiving them.</p></div>
+  {% endif %}
+</div>
+{% endblock %}

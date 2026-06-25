@@ -1,0 +1,34 @@
+{% extends "web/dashboard/base.html" %}
+{% block title %}AI Assistant · DevSync{% endblock %}
+
+{% block dashboard %}
+<div class="max-w-3xl mx-auto h-[calc(100vh-9rem)] flex flex-col">
+  <div class="mb-6">
+    <h1 class="text-3xl font-bold text-violet-100 flex items-center gap-3">
+      <span class="w-10 h-10 rounded-xl flex items-center justify-center" style="background:linear-gradient(135deg, #7c3aed, #ec4899)">
+        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
+      </span>
+      AI Assistant
+    </h1>
+    <p class="mt-2 text-violet-300/60 font-mono text-sm">// Sharpen your bio, draft bullet points, find skill gaps</p>
+  </div>
+
+  <div x-data="{ q:'', messages: [{role:'ai', text:'Hi {{ user.first_name|default:'there' }}! Ask me to improve your bio, write project descriptions, or suggest skills to learn.'}], send(){ if(!this.q.trim())return; this.messages.push({role:'user',text:this.q}); this.messages.push({role:'ai',text:'The AI assistant connects to your local Ollama / Gemini backend (unchanged by this rewrite). Start it to get live responses.'}); this.q=''; } }" class="flex-1 flex flex-col min-h-0">
+    <div class="flex-1 rounded-3xl bg-[#0f1117]/60 border border-violet-500/20 p-6 overflow-y-auto">
+      <template x-for="m in messages">
+        <div class="mb-4 flex" :class="m.role==='ai' ? 'justify-start' : 'justify-end'">
+          <div class="max-w-[80%] px-4 py-3 rounded-2xl text-sm"
+               :class="m.role==='ai' ? 'bg-violet-500/10 text-violet-100 border border-violet-500/20' : 'text-white'"
+               :style="m.role==='user' ? 'background:linear-gradient(135deg, #7c3aed, #ec4899)' : ''"
+               x-text="m.text"></div>
+        </div>
+      </template>
+    </div>
+
+    <form class="mt-4 flex gap-3" @submit.prevent="send()">
+      <input x-model="q" placeholder="Ask the assistant…" class="flex-1 px-4 py-3 bg-[#0f1117]/80 border-2 border-violet-500/20 rounded-xl text-violet-100 placeholder:text-slate-500 outline-none focus:border-violet-500/50" />
+      <button type="submit" class="px-5 py-3 rounded-xl text-white font-medium" style="background:linear-gradient(135deg, #7c3aed, #ec4899)">Send</button>
+    </form>
+  </div>
+</div>
+{% endblock %}
