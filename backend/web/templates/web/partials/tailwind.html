@@ -1,7 +1,9 @@
-{# Tailwind v4 (browser build) + Alpine for pages that use utility classes.
-   The @theme block maps the Synthesis semantic tokens (defined as CSS vars in
-   app.css) onto Tailwind colors so classes like `bg-surface`, `text-on-surface`
-   resolve exactly as they did in the Next.js build. #}
+{% comment %}
+  Tailwind v4 (browser build) + Alpine for pages that use utility classes.
+  The @theme block maps the Synthesis semantic tokens (defined as CSS vars in
+  app.css) onto Tailwind colors so classes like `bg-surface`, `text-on-surface`
+  resolve exactly as they did in the Next.js build.
+{% endcomment %}
 <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
 <style type="text/tailwindcss">
   @theme inline {
